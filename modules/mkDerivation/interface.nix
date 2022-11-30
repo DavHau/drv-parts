@@ -100,6 +100,10 @@ in {
 
     # make-derivation args - without defaults
     enableParallelChecking = optBoolWithDefault true;
+    name = l.mkOption {
+      type = t.nullOr t.str;
+      default = null;
+    };
     pname = l.mkOption {
       type = t.nullOr t.str;
       default = null;

@@ -1,6 +1,5 @@
 {
   config,
-  nixpkgsConfig,
   lib,
   pkgs,
   ...
@@ -26,6 +25,7 @@
     "args"
     "outputHash"
     "realBuilder"
+    "name"
     "pname"
     "version"
     "__contentAddressed"

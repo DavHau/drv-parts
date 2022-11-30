@@ -4,14 +4,15 @@ let
   t = l.types;
 in {
   options.perSystem =
-    flake-parts-lib.mkPerSystemOption ({pkgs, ...}: {
+    flake-parts-lib.mkPerSystemOption ({pkgs, inputs', ...}: {
       options.pkgs = l.mkOption {
         type = t.lazyAttrsOf (
           t.submoduleWith {
-            modules = [./mkDerivation];
+            modules = [./derivation-common];
             specialArgs = {
               inherit pkgs;
               nixpkgsConfig = pkgs.config;
+              inherit inputs';
             };
           }
         );
