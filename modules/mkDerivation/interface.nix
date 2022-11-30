@@ -2,7 +2,6 @@
   l = lib // builtins;
   t = l.types;
   stdenv = pkgs.stdenv;
-  mkOpt = type: l.mkOption {inherit type;};
   optNullOrStr = l.mkOption {
     type = t.nullOr t.str;
     default = null;
@@ -34,7 +33,7 @@ in {
       default = null;
     };
 
-    # defaultEmptyList
+    # make-derivation args - defaultEmptyList
     depsBuildBuild = optList;
     depsBuildBuildPropagated = optList;
     nativeBuildInputs = optList;
@@ -99,7 +98,7 @@ in {
     patches = optList;
 
 
-    # without defaults
+    # make-derivation args - without defaults
     enableParallelChecking = optBoolWithDefault true;
     pname = l.mkOption {
       type = t.nullOr t.str;
@@ -131,11 +130,45 @@ in {
     preDistPhases = optList;
     postPhases = optList;
 
-    # unpack phase variables
-    sourceRoot = l.mkOption {
-      type = t.nullOr (t.oneOf [t.str t.path t.package]);
-      default = null;
-    };
+    # setup.sh phases
+    unpackPhase = optNullOrStr;
+    preUnpack = optNullOrStr;
+    postUnpack = optNullOrStr;
+    patchPhase = optNullOrStr;
+    prePatch = optNullOrStr;
+    postPatch = optNullOrStr;
+    configurePhase = optNullOrStr;
+    preConfigure = optNullOrStr;
+    postConfigure = optNullOrStr;
+    buildPhase = optNullOrStr;
+    preBuild = optNullOrStr;
+    postBuild = optNullOrStr;
+    checkPhase = optNullOrStr;
+    preCheck = optNullOrStr;
+    postCheck = optNullOrStr;
+    installPhase = optNullOrStr;
+    preInstall = optNullOrStr;
+    postInstall = optNullOrStr;
+    fixupPhase = optNullOrStr;
+    preFixup = optNullOrStr;
+    postFixup = optNullOrStr;
+    installCheckPhase = optNullOrStr;
+    preInstallCheck = optNullOrStr;
+    postInstalCheck = optNullOrStr;
+    distPhase = optNullOrStr;
+    preDist = optNullOrStr;
+    postDist = optNullOrStr;
+
+    # setup.sh flags
+    dontUnpack = optBoolWithDefault false;
+    dontPatch = optBoolWithDefault false;
+    dontConfigure = optBoolWithDefault false;
+    dontBuild = optBoolWithDefault false;
+    dontInstall = optBoolWithDefault false;
+    dontFixup = optBoolWithDefault false;
+    doDist = optBoolWithDefault false;
+
+    # unpack phase
     src = l.mkOption {
       type = t.nullOr (t.oneOf [t.str t.path t.package]);
       default = null;
@@ -144,32 +177,66 @@ in {
       type = t.nullOr (t.listOf (t.oneOf [t.str t.path t.package]));
       default = null;
     };
-
-    # setup.sh phases
-    unpackPhase = optNullOrStr;
-    preUnpack = optNullOrStr;
-    postUnpack = optNullOrStr;
+    sourceRoot = l.mkOption {
+      type = t.nullOr (t.oneOf [t.str t.path t.package]);
+      default = null;
+    };
+    setSourceRoot = optNullOrStr;
     dontMakeSourcesWritable = optBoolWithDefault false;
     unpackCmd = optNullOrStr;
 
-    patchPhase = optNullOrStr;
-    configurePhase = optNullOrStr;
-    buildPhase = optNullOrStr;
-    checkPhase = optNullOrStr;
-    installPhase = optNullOrStr;
-    fixupPhase = optNullOrStr;
-    installCheckPhase = optNullOrStr;
+    # patch phase
+    patchFlags = optNullOrStr;
 
-    # setup.sh flags
-    dontUnpack = optBoolWithDefault false;
-    dontPatch = optBoolWithDefault false;
-    dontConfigure = optBoolWithDefault false;
-    dontBuild = optBoolWithDefault false;
-    distPhase = optBoolWithDefault false;
-    dontInstall = optBoolWithDefault false;
-    dontFixup = optBoolWithDefault false;
-    doDist = optBoolWithDefault false;
+    # configure phase
+    configureScript = optNullOrStr;
+    dontAddPrefix = optBoolWithDefault false;
+    prefix = optNullOrStr;
+    prefixKey = optNullOrStr;
+    dontAddStaticConfigureFlags = optBoolWithDefault false;
+    dontAddDisableDepTrack = optBoolWithDefault false;
+    dontFixLibtool = optBoolWithDefault false;
+    dontDisableStatic = optBoolWithDefault false;
 
+    # build phase
+    makefile = optNullOrStr;
+    makeFlags = optList;
+    buildFlags = optList;
 
+    # check phase
+    checkTarget = optNullOrStr;
+    checkFLags = optList;
+
+    # install phase
+    installTargets = optNullOrStr;
+    installFlags = optList;
+
+    # fixup phase
+    dontStrip = optBoolWithDefault false;
+    dontStripHost = optBoolWithDefault false;
+    dontStripTarget = optBoolWithDefault false;
+    dontMoveBin = optBoolWithDefault false;
+    stripAllList = optList;
+    stripAllFlags = optList;
+    stripDebugList = optList;
+    stripDebugFlags = optList;
+    dontPatchELF = optBoolWithDefault false;
+    dontPatchShebangs = optBoolWithDefault false;
+    dontPruneLibtoolFiles = optBoolWithDefault false;
+    forceShare = optList;
+    setupHook = l.mkOption {
+      type = t.nullOr t.path;
+      default = null;
+    };
+
+    # installCheck phase
+    installCheckTarget = optNullOrStr;
+    installCheckFlags = optList;
+
+    # distribution phase
+    distTarget = optNullOrStr;
+    distFlags = optList;
+    tarballs = optList;
+    dontCopyDist = optBoolWithDefault false;
   };
 }
