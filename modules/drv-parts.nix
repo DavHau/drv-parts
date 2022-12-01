@@ -1,22 +1,94 @@
-{ config, lib, flake-parts-lib, inputs, ... }:
+{lib, flake-parts-lib, inputs, ... }:
 let
   l = lib // builtins;
   t = l.types;
 in {
   options.perSystem =
-    flake-parts-lib.mkPerSystemOption ({pkgs, inputs', ...}: {
-      options.drvs = l.mkOption {
-        type = t.lazyAttrsOf (
-          t.submoduleWith {
-            modules = [./derivation-common];
-            specialArgs = {
-              # inherit pkgs;
-              inherit (pkgs) stdenv;
-              nixpkgsConfig = pkgs.config;
-              inherit (inputs.drv-parts) drv-backends;
+    flake-parts-lib.mkPerSystemOption ({config, pkgs, inputs', ...}: {
+      options = {
+
+        drvs = l.mkOption {
+          type = t.lazyAttrsOf (
+            t.submoduleWith {
+              modules = [./derivation-common];
+              specialArgs = {
+                # inherit pkgs;
+                inherit (pkgs) stdenv;
+                inherit (inputs.drv-parts) drv-backends;
+                inherit (config) dependencySets;
+                nixpkgsConfig = pkgs.config;
+              };
+            }
+          );
+          description = "An attribute set of derivations";
+          example = lib.literalExpression ''
+            hello-simple = {
+
+              # select mkDerivation as a backend for this package
+              imports = [drv-parts.modules.mkDerivation];
+
+              # set options
+              name = "hello";
+              src = builtins.fetchurl {
+                url = "mirror://gnu/hello/hello-2.12.1.tar.gz";-
+                sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
+              };
             };
-          }
-        );
+
+            hello-advanced = {config, ...} let
+              deps = config.deps;
+            in {
+
+              # select mkDerivation as a backend for this package
+              imports = [drv-parts.modules.mkDerivation];
+
+              # Define dependencies from the "outer world" only via `deps`.
+              # This allows for easy overriding later.
+              deps = {pkgs, ...} {
+                inherit (pkgs)
+                  fetchurl
+                  python
+                  ;
+              };
+
+              # set options
+              name = "hello";
+              src = deps.fetchurl {
+                url = "mirror://gnu/hello/hello-2.12.1.tar.gz";
+                sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
+              };
+
+              nativeBuildInputs = [
+                deps.python
+              ]
+
+              postInstall = ''''
+                python -c "print('example')" > $out/example
+              '''';
+            };
+          '';
+        };
+
+        dependencySets = l.mkOption {
+          type = t.lazyAttrsOf t.raw;
+          default =
+            {inherit pkgs;}
+            // (
+              lib.optionalAttrs
+              (inputs' ? packages)
+              {inherit (inputs') packages;}
+            );
+          description = ''
+            Define the package sets which can be used to pick dependencies from.
+            Basically this specifies the arguments passed to the function defined via drvs.<name>.deps.
+          '';
+          example = lib.literalExpression ''
+            {
+              inherit pkgs;
+              inherit (inputs') packages;
+            }
+          '';
+        };
       };
     });
 

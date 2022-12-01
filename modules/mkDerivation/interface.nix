@@ -70,7 +70,7 @@ in {
     meta = optAttrs;
     passthru  = optAttrs;
     pos = l.mkOption {
-      type = t.nullOr t.str;
+      type = t.nullOr t.attrs;
       default =
         # TODO: this seems to be null by default, but probably shouldn't !?
         # position used in error messages and for meta.position

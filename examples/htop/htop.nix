@@ -21,6 +21,17 @@ in {
     pname = "htop";
     version = "3.2.1";
 
+    deps = {pkgs, ...}: {
+      inherit (pkgs)
+        autoreconfHook
+        fetchFromGitHub
+        IOKit
+        lm_sensors
+        ncurses
+        systemd
+        ;
+    };
+
     src = deps.fetchFromGitHub {
       owner = "htop-dev";
       repo = config.pname;

@@ -17,20 +17,31 @@
       # enable the drv-parts plugin for flake-parts
       imports = [drv-parts.flakeModule];
 
-      perSystem = {config, lib, pkgs, ...}: {
+      perSystem = {config, lib, pkgs, extendModules, ...}: {
         checks = config.packages;
-        drvs.htop = {
-          imports = [./htop.nix];
-          deps = {
-            inherit (pkgs)
-              autoreconfHook
-              fetchFromGitHub
-              IOKit
-              lm_sensors
-              ncurses
-              systemd
-              ;
+
+        drvs = {
+
+          # htop defined via submodule
+          htop.imports = [./htop.nix];
+
+          # overriding htop
+          htop-mod = {
+            imports = [./htop.nix];
+            pname = lib.mkForce "htop-mod";
+            sensorsSupport = false;
           };
+        };
+
+        packages = {
+
+          # overriding htop without drv-parts
+          htop-mod-nixpkgs =
+            (pkgs.htop.overrideAttrs (old: {
+              pname = "htop-mod";
+            })).override (old: {
+              sensorsSupport = true;
+            });
         };
       };
     };

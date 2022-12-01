@@ -1,6 +1,7 @@
-{config, lib, ...}: let
+{config, lib, dependencySets ? {}, ...}: let
   l = lib // builtins;
   t = l.types;
+  callDeps = func: func dependencySets;
 in {
   options = {
 
@@ -25,10 +26,14 @@ in {
 
         So deps should be specific, but not overly specific. For instance, the caller shouldn't have to know the version of a dependency in order to override it. The name should suffice. (e.g. `nix = nixVersions.nix_2_12` instead of `inherit (nixVersions) nix_2_12`.
       '';
-      type = t.lazyAttrsOf t.raw;
+      type =
+        t.coercedTo
+        (t.functionTo (t.lazyAttrsOf t.raw))
+        callDeps
+        (t.lazyAttrsOf t.raw);
       default = {};
       example = lib.literalExpression ''
-        {
+        {pkgs, packages, ...}: {
           inherit (pkgs) stdenv;
           inherit (pkgs.haskellPackages) pandoc;
           nix = inputs'.nix.packages.default;
