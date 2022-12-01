@@ -25,29 +25,24 @@
             mkDerivation
             ;
         };
-        modules = {
-          # import one of these to pick the backend for your derivation
-          # TODO: add more backends like for ex.: buildPythonPackage, etc.
-          derivation = ./modules/derivation;
-          mkDerivation = ./modules/mkDerivation;
-
-          # the main module creatig the `.pkgs.[...]` option for flake-parts
-          drv-parts = ./modules/drv-parts.nix;
-
-          # the base derivation type used by the drv-parts module
-          derivation-common = ./modules/derivation-common;
-        };
+        modules = (import ./default.nix).modules;
       };
 
       perSystem = {system, pkgs, ...}: {
         packages.tests-examples = pkgs.writeShellScriptBin "tests-examples" ''
           set -eu -o pipefail
-          for example in $(find ./examples); do
+          for example in $(find ./examples/flake-parts/ -type f); do
             echo "testing example $example"
             nix flake check "$example" -L \
               --show-trace \
               --no-write-lock-file \
               --override-input drv-parts ${self}
+          done
+          for example in $(find ./examples/no-flake/ -type f); do
+            echo "testing example $example"
+            nix build -f "$example" -L \
+              --show-trace \
+              --no-link
           done
         '';
       };

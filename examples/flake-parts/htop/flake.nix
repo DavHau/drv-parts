@@ -36,10 +36,12 @@
         packages = {
 
           # overriding htop without drv-parts
-          htop-mod-nixpkgs =
-            (pkgs.htop.overrideAttrs (old: {
+          htop-mod-nixpkgs = let
+            htop-attrs-overridden = pkgs.htop.overrideAttrs (old: {
               pname = "htop-mod";
-            })).override (old: {
+            });
+          in
+            htop-attrs-overridden.override (old: {
               sensorsSupport = true;
             });
         };
