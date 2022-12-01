@@ -1,12 +1,11 @@
 {
   config,
   lib,
-  pkgs,
+  stdenv,
   ...
 }: let
   l = lib // builtins;
   t = l.types;
-  stdenv = pkgs.stdenv;
 
   # args that should not be passed to mkDerivation
   argsIgnore = [
@@ -14,6 +13,7 @@
     "_module"
     # this module's options which should not end up in the drv
     "derivation"
+    "deps"
     "env"
     "drvPath"
     "type"

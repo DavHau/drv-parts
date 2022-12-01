@@ -1,9 +1,9 @@
-{config, inputs', lib, pkgs, ...}: let
-  stdenv = pkgs.stdenv;
+{config, lib, stdenv, drv-backends, ...}: let
+  deps = config.deps;
 in {
 
   # select mkDerivation as a backend for this package
-  imports = builtins.trace inputs'.drv-parts [inputs'.drv-parts.modules.mkDerivation];
+  imports = [drv-backends.mkDerivation];
 
   options = {
     sensorsSupport = lib.mkOption {
@@ -21,19 +21,19 @@ in {
     pname = "htop";
     version = "3.2.1";
 
-    src = pkgs.fetchFromGitHub {
+    src = deps.fetchFromGitHub {
       owner = "htop-dev";
       repo = config.pname;
       rev = config.version;
       sha256 = "sha256-MwtsvdPHcUdegsYj9NGyded5XJQxXri1IM1j4gef1Xk=";
     };
 
-    nativeBuildInputs = [ pkgs.autoreconfHook ];
+    nativeBuildInputs = [ deps.autoreconfHook ];
 
-    buildInputs = [ pkgs.ncurses ]
-      ++ lib.optional stdenv.isDarwin pkgs.IOKit
-      ++ lib.optional config.sensorsSupport pkgs.lm_sensors
-      ++ lib.optional config.systemdSupport pkgs.systemd
+    buildInputs = [ deps.ncurses ]
+      ++ lib.optional stdenv.isDarwin deps.IOKit
+      ++ lib.optional config.sensorsSupport deps.lm_sensors
+      ++ lib.optional config.systemdSupport deps.systemd
     ;
 
     configureFlags = [ "--enable-unicode" "--sysconfdir=/etc" ]
@@ -45,8 +45,8 @@ in {
         optionalPatch = pred: so: lib.optionalString pred "patchelf --add-needed ${so} $out/bin/htop";
       in
       ''
-        ${optionalPatch config.sensorsSupport "${pkgs.lm_sensors}/lib/libsensors.so"}
-        ${optionalPatch config.systemdSupport "${pkgs.systemd}/lib/libsystemd.so"}
+        ${optionalPatch config.sensorsSupport "${deps.lm_sensors}/lib/libsensors.so"}
+        ${optionalPatch config.systemdSupport "${deps.systemd}/lib/libsystemd.so"}
       '';
 
     meta = with lib; {

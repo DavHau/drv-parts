@@ -17,9 +17,21 @@
       # enable the drv-parts plugin for flake-parts
       imports = [drv-parts.flakeModule];
 
-      perSystem = {config, lib,  pkgs, ...}: {
+      perSystem = {config, lib, pkgs, ...}: {
         checks = config.packages;
-        pkgs.htop = import ./htop.nix;
+        drvs.htop = {
+          imports = [./htop.nix];
+          deps = {
+            inherit (pkgs)
+              autoreconfHook
+              fetchFromGitHub
+              IOKit
+              lm_sensors
+              ncurses
+              systemd
+              ;
+          };
+        };
       };
     };
 }

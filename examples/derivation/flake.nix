@@ -19,12 +19,12 @@
 
       perSystem = {config, pkgs, system, ...}: {
         checks = config.packages;
-        pkgs.hello = {
+        drvs.hello = {
 
           # select mkDerivation as a backend for this package
           imports = [drv-parts.modules.derivation];
 
-          # # set options
+          # set options
           name = "test";
           builder = "/bin/sh";
           args = ["-c" "echo $name > $out"];

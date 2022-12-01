@@ -1,7 +1,6 @@
-{config, lib, pkgs, nixpkgsConfig, ...}: let
+{config, lib, stdenv, nixpkgsConfig, ...}: let
   l = lib // builtins;
   t = l.types;
-  stdenv = pkgs.stdenv;
   optNullOrStr = l.mkOption {
     type = t.nullOr t.str;
     default = null;

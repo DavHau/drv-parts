@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}: let
+{config, lib, ...}: let
   l = lib // builtins;
   t = l.types;
 in {

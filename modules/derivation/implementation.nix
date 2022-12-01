@@ -1,4 +1,4 @@
-{config, lib, pkgs, ...}: let
+{config, lib, ...}: let
   l = lib // builtins;
   t = l.types;
 
@@ -8,6 +8,7 @@
     "_module"
     # this module's options which should not end up in the drv
     "derivation"
+    "deps"
     "env"
     "drvPath"
     "type"

@@ -1,18 +1,19 @@
-{ config, lib, flake-parts-lib, ... }:
+{ config, lib, flake-parts-lib, inputs, ... }:
 let
   l = lib // builtins;
   t = l.types;
 in {
   options.perSystem =
     flake-parts-lib.mkPerSystemOption ({pkgs, inputs', ...}: {
-      options.pkgs = l.mkOption {
+      options.drvs = l.mkOption {
         type = t.lazyAttrsOf (
           t.submoduleWith {
             modules = [./derivation-common];
             specialArgs = {
-              inherit pkgs;
+              # inherit pkgs;
+              inherit (pkgs) stdenv;
               nixpkgsConfig = pkgs.config;
-              inherit inputs';
+              inherit (inputs.drv-parts) drv-backends;
             };
           }
         );
@@ -32,7 +33,7 @@ in {
       This exposes the `.derivation` attribute (the actual derivation) of each
         defined `pkgs.xxx` under the flake output `packages`.
     */
-    config.packages = l.mapAttrs (name: pkg: pkg.derivation) config.pkgs;
+    config.packages = l.mapAttrs (name: pkg: pkg.derivation) config.drvs;
   };
 
 }

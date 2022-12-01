@@ -18,9 +18,14 @@
       systems = ["x86_64-linux"];
 
       flake = {
-        flakeModule = self.nixosModules.drv-parts;
-        modules = self.nixosModules;
-        nixosModules = {
+        flakeModule = self.modules.drv-parts;
+        drv-backends = {
+          inherit (self.modules)
+            derivation
+            mkDerivation
+            ;
+        };
+        modules = {
           # import one of these to pick the backend for your derivation
           # TODO: add more backends like for ex.: buildPythonPackage, etc.
           derivation = ./modules/derivation;
