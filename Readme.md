@@ -1,4 +1,3 @@
-Define derivations using the nixos module system.
 # drv-parts
 
 This is experimental, use with care!
