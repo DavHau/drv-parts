@@ -17,7 +17,7 @@ For more details on the problems, visit [DavHau/pkgs-modules](https://github.com
 
 # Benefits
 ## no more override functions
-Changing options of packages in nixpkgs can require chainging different override functions like this:
+Changing options of packages in nixpkgs can require chaining different override functions like this:
 ```nix
 {
   htop-mod = let
