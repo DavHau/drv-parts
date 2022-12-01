@@ -1,6 +1,8 @@
 Define derivations using the nixos module system.
 # drv-parts
 
+This is experimental, use with care!
+
 `drv-parts` replaces `callPackage`, `override`, `overrideAttrs`, `...` as a mechanism for configuring packages.  
 It makes package configuration feel like nixos system configuration. 
 
