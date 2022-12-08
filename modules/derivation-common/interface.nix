@@ -57,6 +57,10 @@ in {
     system = lib.mkOption {
       type = t.str;
     };
+    __structuredAttrs = lib.mkOption {
+      type = t.nullOr t.bool;
+      default = false;
+    };
 
     # advanced attributes
     allowedReferences = lib.mkOption {
