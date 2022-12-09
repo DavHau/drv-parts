@@ -71,21 +71,14 @@ in {
 
         dependencySets = l.mkOption {
           type = t.lazyAttrsOf t.raw;
-          default =
-            {inherit pkgs;}
-            // (
-              lib.optionalAttrs
-              (inputs' ? packages)
-              {inherit (inputs') packages;}
-            );
+          default = {inherit pkgs inputs';};
           description = ''
             Define the package sets which can be used to pick dependencies from.
             Basically this specifies the arguments passed to the function defined via drvs.<name>.deps.
           '';
           example = lib.literalExpression ''
             {
-              inherit pkgs;
-              inherit (inputs') packages;
+              inherit pkgs inputs';
             }
           '';
         };

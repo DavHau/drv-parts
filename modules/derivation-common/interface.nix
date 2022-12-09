@@ -33,7 +33,7 @@ in {
         (t.lazyAttrsOf t.raw);
       default = {};
       example = lib.literalExpression ''
-        {pkgs, packages, ...}: {
+        {pkgs, inputs', ...}: {
           inherit (pkgs) stdenv;
           inherit (pkgs.haskellPackages) pandoc;
           nix = inputs'.nix.packages.default;
