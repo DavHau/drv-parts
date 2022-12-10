@@ -22,6 +22,11 @@ in {
     ../derivation-common
   ];
   options = {
+    mkDerivationArgs = l.mkOption {
+      type = t.attrs;
+      internal = true;
+    };
+
     # from derivation
     builder = l.mkOption {
       type = t.nullOr (t.oneOf [t.str t.path t.package]);

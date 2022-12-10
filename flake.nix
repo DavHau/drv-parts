@@ -25,6 +25,13 @@
             mkDerivation
             ;
         };
+        lib = {
+          # function that converts a legacy default.nix to a drv-parts module.
+          makeModule = import ./lib/makeModule.nix {
+            inherit (nixpkgs) lib;
+            mkDerivationBackend = self.modules.mkDerivation;
+          };
+        };
         modules = (import ./default.nix).modules;
       };
 

@@ -17,6 +17,7 @@
     "env"
     "drvPath"
     "type"
+    "mkDerivationArgs"
   ];
 
   # args that should not be passed to mkDerivation if set to null
@@ -88,6 +89,9 @@
     ;
 
 in {
+  # contains only the arguments that will be passed to nixpkgs' mkDerivation
+  config.mkDerivationArgs = args;
+
   config.derivation =
-    stdenv.mkDerivation args;
+    stdenv.mkDerivation config.mkDerivationArgs;
 }
