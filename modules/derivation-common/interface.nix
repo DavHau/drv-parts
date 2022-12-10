@@ -1,4 +1,4 @@
-{config, lib, dependencySets ? {}, ...}: let
+{config, lib, dependencySets, ...}: let
   l = lib // builtins;
   t = l.types;
   callDeps = func: func dependencySets;
