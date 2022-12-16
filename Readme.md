@@ -16,7 +16,8 @@ drv-parts was funded as part of the [dream2nix](https://github.com/nix-community
 
 # Why Modules?
 Declaring derivations as modules solves a number of issues.  
-For more details on the problems, visit [DavHau/pkgs-modules](https://github.com/DavHau/pkgs-modules).
+For more details on the problems, visit [DavHau/pkgs-modules](https://github.com/DavHau/pkgs-modules).  
+Also I recommend watching @edolstra 's [talk about this topic](https://www.youtube.com/watch?v=dTd499Y31ig).
 
 # Benefits
 ## no more override functions
