@@ -29,7 +29,7 @@
 
   nixpkgs-htop = pkgs.htop;
 in
-  # assert my-htop.drvPath == nixpkgs-htop.drvPath;
+  assert my-htop.drvPath == nixpkgs-htop.drvPath;
   {
     inherit
       my-htop

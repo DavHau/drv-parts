@@ -1,10 +1,14 @@
 {config, lib, ...}: let
   l = lib // builtins;
   t = l.types;
-in {
+in rec {
   imports = [
     ../derivation-common
   ];
+
+  # signal that all options should be passed to the final derivation function
+  config.argsForward = l.mapAttrs (_: _: true) options;
+
   options = {
     # basic arguments
     builder = lib.mkOption {

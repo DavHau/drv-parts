@@ -19,7 +19,7 @@
 
       perSystem = {config, pkgs, system, ...}: {
         checks = config.packages;
-        drvs.hello = {
+        drvs.test = {
 
           # select mkDerivation as a backend for this package
           imports = [drv-parts.modules.derivation];
