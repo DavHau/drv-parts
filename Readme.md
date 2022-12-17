@@ -9,7 +9,7 @@ This is an implementation of ideas first drafted at [DavHau/pkgs-modules](https:
 
 It is recommended to use `drv-parts` through [flake-parts](https://flake.parts) (see [examples/flake-parts](/examples/flake-parts)).
 
-Usage without flakes is also possible. (see [examples/no-flake](/examples/nox-flake)).
+Usage without flakes is also possible. (see [examples/no-flake](/examples/no-flake)).
 
 # Funding by NLNet
 drv-parts was funded as part of the [dream2nix](https://github.com/nix-community/dream2nix) project through the [NGI Assure](https://nlnet.nl/assure) Fund, a fund established by [NLnet](https://nlnet.nl/) with financial support from the European Commission's [Next Generation Internet](https://ngi.eu/) programme, under the aegis of DG Communications Networks, Content and Technology under grant agreement No 957073. **Applications are still open, you can [apply today](https://nlnet.nl/propose)**.
