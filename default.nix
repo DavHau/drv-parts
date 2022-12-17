@@ -1,4 +1,8 @@
+{
+  lib ? import <nixpkgs/lib>,
+}:
 let
+  l = lib // builtins;
   modules = {
     # import one of these to pick the backend for your derivation
     # TODO: add more backends like for ex.: buildPythonPackage, etc.
@@ -24,4 +28,5 @@ in
       drv-backends
       modules
       ;
+    lib = import ./lib {inherit lib;};
   }

@@ -13,14 +13,19 @@
     flake-parts,
     nixpkgs,
     ...
-  }:
+  }: let
+    defaultNix = import ./default.nix {inherit (nixpkgs) lib;};
+  in
     flake-parts.lib.mkFlake {inherit self;} {
       systems = ["x86_64-linux"];
 
       flake = {
+        inherit (defaultNix)
+          drv-backends
+          lib
+          modules
+          ;
         flakeModule = self.modules.drv-parts;
-        drv-backends = (import ./default.nix).drv-backends;
-        modules = (import ./default.nix).modules;
       };
 
       perSystem = {system, pkgs, ...}: {

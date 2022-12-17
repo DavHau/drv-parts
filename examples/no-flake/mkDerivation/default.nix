@@ -1,6 +1,6 @@
 {
   pkgs ? import <nixpkgs> {},
-  drv-parts ? import ../../../default.nix,
+  drv-parts ? import ../../../default.nix {inherit (pkgs) lib;},
   ...
 }: let
   hello = {
