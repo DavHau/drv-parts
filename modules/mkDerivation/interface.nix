@@ -6,16 +6,28 @@
     default = null;
   };
   optList = l.mkOption {
-    type = t.listOf t.anything;
-    default = [];
+    type = t.nullOr (t.listOf t.anything);
+    default = null;
+  };
+  optListOfStr = l.mkOption {
+    type = t.nullOr (t.listOf t.str);
+    default = null;
   };
   optAttrs = l.mkOption {
-    type = t.attrs;
+    type = t.nullOr (t.attrs);
     default = {};
   };
-  optBoolWithDefault = default: l.mkOption {
-    type = t.bool;
-    inherit default;
+  optNullOrBool = l.mkOption {
+    type = t.nullOr t.bool;
+    default = null;
+  };
+  optPackage = l.mkOption {
+    type = t.nullOr (t.oneOf [t.str t.path t.package]);
+    default = null;
+  };
+  optPackageList = l.mkOption {
+    type = t.nullOr (t.listOf (t.oneOf [t.str t.path t.package]));
+    default = null;
   };
 in {
   imports = [
@@ -23,14 +35,8 @@ in {
   ];
   options = {
     # from derivation
-    builder = l.mkOption {
-      type = t.nullOr (t.oneOf [t.str t.path t.package]);
-      default = null;
-    };
-    __contentAddressed = lib.mkOption {
-      type = t.nullOr t.bool;
-      default = null;
-    };
+    builder = optPackage;
+    __contentAddressed = optNullOrBool;
 
     # make-derivation args - defaultEmptyList
     depsBuildBuild = optList;
@@ -50,81 +56,35 @@ in {
     configureFlags = optList;
     cmakeFlags = optList;
     mesonFlags = optList;
-    configurePlatforms = l.mkOption {
-      type = t.listOf t.anything;
-      default = l.optionals
-        (stdenv.hostPlatform != stdenv.buildPlatform
-          # TODO: This expression from nixpkgs had to be modified.
-          # investigate why `or false` is not required in nixpkgs
-          || nixpkgsConfig.configurePlatformsByDefault or false)
-        [ "build" "host" ];
-    };
-    doCheck = optBoolWithDefault nixpkgsConfig.doCheckByDefault or false;
-    doInstallCheck = optBoolWithDefault nixpkgsConfig.doCheckByDefault or false;
-    strictDeps = optBoolWithDefault
-      (if nixpkgsConfig.strictDepsByDefault
-      then true
-      else stdenv.hostPlatform != stdenv.buildPlatform);
-    enableParallelBuilding =
-      optBoolWithDefault nixpkgsConfig.enableParallelBuildingByDefault;
+    configurePlatforms = optList;
+    doCheck = optNullOrBool;
+    doInstallCheck = optNullOrBool;
+    strictDeps = optNullOrBool;
+    enableParallelBuilding = optNullOrBool;
     meta = optAttrs;
     passthru  = optAttrs;
-    pos = l.mkOption {
-      type = t.nullOr t.attrs;
-      default =
-        # TODO: this seems to be null by default, but probably shouldn't !?
-        # position used in error messages and for meta.position
-        (if config.meta.description or null != null
-          then builtins.unsafeGetAttrPos "description" config.meta
-          else if config.version or null != null
-          then builtins.unsafeGetAttrPos "version" config
-          else builtins.unsafeGetAttrPos "name" config);
-    };
-    separateDebugInfo = optBoolWithDefault false;
-    __darwinAllowLocalNetworking = optBoolWithDefault false;
+    pos = optAttrs;
+    separateDebugInfo = optNullOrBool;
+    __darwinAllowLocalNetworking = optNullOrBool;
     __impureHostDeps = optList;
     __propagatedImpureHostDeps = optList;
-    sandboxProfile = l.mkOption {
-      type = t.str;
-      default = "";
-    };
-    propagatedSandboxProfile = l.mkOption {
-      type = t.str;
-      default = "";
-    };
+    sandboxProfile = optNullOrStr;
+    propagatedSandboxProfile = optNullOrStr;
     hardeningEnable = optList;
     hardeningDisable = optList;
     patches = optList;
 
 
     # make-derivation args - without defaults
-    enableParallelChecking = optBoolWithDefault true;
-    name = l.mkOption {
-      type = t.nullOr t.str;
-      default = null;
-    };
-    pname = l.mkOption {
-      type = t.nullOr t.str;
-      default = null;
-    };
-    realBuilder = l.mkOption {
-      type = t.nullOr (t.oneOf [t.str t.path t.package]);
-      default = null;
-    };
-    requiredSystemFeatures = l.mkOption {
-      type = t.listOf t.str;
-      default = [];
-    };
-    version = l.mkOption {
-      type = t.nullOr t.str;
-      default = null;
-    };
+    enableParallelChecking = optNullOrBool;
+    name = optNullOrStr;
+    pname = optNullOrStr;
+    realBuilder = optPackage;
+    requiredSystemFeatures = optListOfStr;
+    version = optNullOrStr;
 
     # setup.sh phase lists
-    phases = l.mkOption {
-      type = t.nullOr (t.listOf t.str);
-      default = null;
-    };
+    phases = optListOfStr;
     prePhases = optList;
     preConfigurePhases = optList;
     preBuildPhases = optList;
@@ -163,29 +123,20 @@ in {
     postDist = optNullOrStr;
 
     # setup.sh flags
-    dontUnpack = optBoolWithDefault false;
-    dontPatch = optBoolWithDefault false;
-    dontConfigure = optBoolWithDefault false;
-    dontBuild = optBoolWithDefault false;
-    dontInstall = optBoolWithDefault false;
-    dontFixup = optBoolWithDefault false;
-    doDist = optBoolWithDefault false;
+    dontUnpack = optNullOrBool;
+    dontPatch = optNullOrBool;
+    dontConfigure = optNullOrBool;
+    dontBuild = optNullOrBool;
+    dontInstall = optNullOrBool;
+    dontFixup = optNullOrBool;
+    doDist = optNullOrBool;
 
     # unpack phase
-    src = l.mkOption {
-      type = t.nullOr (t.oneOf [t.str t.path t.package]);
-      default = null;
-    };
-    srcs = l.mkOption {
-      type = t.nullOr (t.listOf (t.oneOf [t.str t.path t.package]));
-      default = null;
-    };
-    sourceRoot = l.mkOption {
-      type = t.nullOr (t.oneOf [t.str t.path t.package]);
-      default = null;
-    };
+    src = optPackage;
+    srcs = optPackageList;
+    sourceRoot = optPackage;
     setSourceRoot = optNullOrStr;
-    dontMakeSourcesWritable = optBoolWithDefault false;
+    dontMakeSourcesWritable = optNullOrBool;
     unpackCmd = optNullOrStr;
 
     # patch phase
@@ -193,13 +144,13 @@ in {
 
     # configure phase
     configureScript = optNullOrStr;
-    dontAddPrefix = optBoolWithDefault false;
+    dontAddPrefix = optNullOrBool;
     prefix = optNullOrStr;
     prefixKey = optNullOrStr;
-    dontAddStaticConfigureFlags = optBoolWithDefault false;
-    dontAddDisableDepTrack = optBoolWithDefault false;
-    dontFixLibtool = optBoolWithDefault false;
-    dontDisableStatic = optBoolWithDefault false;
+    dontAddStaticConfigureFlags = optNullOrBool;
+    dontAddDisableDepTrack = optNullOrBool;
+    dontFixLibtool = optNullOrBool;
+    dontDisableStatic = optNullOrBool;
 
     # build phase
     makefile = optNullOrStr;
@@ -215,22 +166,19 @@ in {
     installFlags = optList;
 
     # fixup phase
-    dontStrip = optBoolWithDefault false;
-    dontStripHost = optBoolWithDefault false;
-    dontStripTarget = optBoolWithDefault false;
-    dontMoveBin = optBoolWithDefault false;
+    dontStrip = optNullOrBool;
+    dontStripHost = optNullOrBool;
+    dontStripTarget = optNullOrBool;
+    dontMoveBin = optNullOrBool;
     stripAllList = optList;
     stripAllFlags = optList;
     stripDebugList = optList;
     stripDebugFlags = optList;
-    dontPatchELF = optBoolWithDefault false;
-    dontPatchShebangs = optBoolWithDefault false;
-    dontPruneLibtoolFiles = optBoolWithDefault false;
+    dontPatchELF = optNullOrBool;
+    dontPatchShebangs = optNullOrBool;
+    dontPruneLibtoolFiles = optNullOrBool;
     forceShare = optList;
-    setupHook = l.mkOption {
-      type = t.nullOr t.path;
-      default = null;
-    };
+    setupHook = optPackage;
 
     # installCheck phase
     installCheckTarget = optNullOrStr;
@@ -240,6 +188,6 @@ in {
     distTarget = optNullOrStr;
     distFlags = optList;
     tarballs = optList;
-    dontCopyDist = optBoolWithDefault false;
+    dontCopyDist = optNullOrBool;
   };
 }
