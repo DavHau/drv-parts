@@ -14,8 +14,44 @@
     type = t.nullOr t.str;
     default = null;
   };
-in {
-  options = {
+
+  # options forwarded to the final derivation function call
+  forwardedOptions = {
+    # basic arguments
+    args = optListOfStr;
+    outputs = lib.mkOption {
+      type = t.listOf t.str;
+      default = ["out"];
+    };
+    __structuredAttrs = lib.mkOption {
+      type = t.nullOr t.bool;
+      default = null;
+    };
+
+    # advanced attributes
+    allowedReferences = optListOfStr;
+    allowedRequisites = optListOfStr;
+    disallowedReferences = optListOfStr;
+    disallowedRequisites = optListOfStr;
+    exportReferenceGraph = lib.mkOption {
+      # TODO: make type stricter
+      type = t.nullOr (t.listOf (t.either t.str t.package));
+      default = null;
+    };
+    impureEnvVars = optListOfStr;
+    outputHash = optNullOrStr;
+    outputHashAlgo = optNullOrStr;
+    outputHashMode = optNullOrStr;
+    passAsFile = optListOfStr;
+    preferLocalBuild = optListOfStr;
+    allowSubstitutes = optNullOrBool;
+  };
+
+  # drv-parts specific options, not forwardedto the final deirvation call
+  drvPartsOptions = {
+    argsForward = l.mkOption {
+      type = t.attrsOf t.bool;
+    };
 
     # this will be the resulting derivation
     final.derivation-args = l.mkOption {
@@ -53,37 +89,13 @@ in {
       '';
     };
 
-    # basic arguments
-    args = optListOfStr;
     env = lib.mkOption {
       type = t.attrsOf (t.oneOf [t.bool t.int t.str t.path t.package]);
       default = {};
     };
-    outputs = lib.mkOption {
-      type = t.listOf t.str;
-      default = ["out"];
-    };
-    __structuredAttrs = lib.mkOption {
-      type = t.nullOr t.bool;
-      default = null;
-    };
 
-    # advanced attributes
-    allowedReferences = optListOfStr;
-    allowedRequisites = optListOfStr;
-    disallowedReferences = optListOfStr;
-    disallowedRequisites = optListOfStr;
-    exportReferenceGraph = lib.mkOption {
-      # TODO: make type stricter
-      type = t.nullOr (t.listOf (t.either t.str t.package));
-      default = null;
-    };
-    impureEnvVars = optListOfStr;
-    outputHash = optNullOrStr;
-    outputHashAlgo = optNullOrStr;
-    outputHashMode = optNullOrStr;
-    passAsFile = optListOfStr;
-    preferLocalBuild = optListOfStr;
-    allowSubstitutes = optNullOrBool;
   };
+in {
+  config.argsForward = l.mapAttrs (_: _: true) forwardedOptions;
+  options = forwardedOptions // drvPartsOptions;
 }

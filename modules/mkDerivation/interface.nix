@@ -29,11 +29,17 @@
     type = t.nullOr (t.listOf (t.oneOf [t.str t.path t.package]));
     default = null;
   };
-in {
+
+in rec {
   imports = [
     ../derivation-common
   ];
+
+  # signal that all options should be passed to the final derivation function
+  config.argsForward = l.mapAttrs (_: _: true) options;
+
   options = {
+
     # from derivation
     builder = optPackage;
     __contentAddressed = optNullOrBool;

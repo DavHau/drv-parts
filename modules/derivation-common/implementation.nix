@@ -6,30 +6,17 @@
   l = lib // builtins;
   t = l.types;
 
-  # args that should not be passed to mkDerivation
-  argsIgnore = [
-    # attrs introduced by module system
-    "_module"
-    # this module's options which should not end up in the drv
-    "derivation"
-    "deps"
-    "env"
-    "final"
-  ];
+  keepArg = key: val:
+    (config.argsForward.${key} or false)
+    && (val != null);
 
-  /*
-    Filters out args which potentially must be removed because they are null.
-    Later, the ones which are not null will be added back via `argsMaybeIgnored`
-  */
-  argsCleaned = l.removeAttrs config (argsIgnore);
-
-  argsNotNull = l.filterAttrs (_: val: val != null) argsCleaned;
+  finalArgs = l.filterAttrs keepArg config;
 
   # esure that none of the env variables collides with the top-level options
   envChecked =
     l.mapAttrs
     (key: val:
-      if config ? ${key}
+      if finalArgs ? ${key}
       then throw (envCollisionError key)
       else val)
     config.env;
@@ -43,7 +30,7 @@
   # all args that are massed directly to mkDerivation
   args =
     envChecked
-    // argsNotNull
+    // finalArgs
     ;
 
 in {
