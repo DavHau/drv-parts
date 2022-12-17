@@ -11,7 +11,17 @@ let
     # the base derivation type used by the drv-parts module
     derivation-common = ./modules/derivation-common;
   };
+
+  drv-backends = {
+    inherit (modules)
+      derivation
+      mkDerivation
+      ;
+  };
 in
   {
-    inherit modules;
+    inherit
+      drv-backends
+      modules
+      ;
   }

@@ -13,8 +13,11 @@
     args = ["-c" "echo $name > $out"];
     system = builtins.currentSystem;
   };
-  makePackage = module: lib.evalModules {
-    modules = [module];
-  };
+  makePackage = module: let
+    drv = lib.evalModules {
+      modules = [module];
+    };
+  in
+    drv.config.final.derivation;
 in
   makePackage hello

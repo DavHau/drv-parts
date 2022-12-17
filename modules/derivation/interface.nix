@@ -13,6 +13,9 @@ in {
     name = lib.mkOption {
       type = t.str;
     };
+    system = lib.mkOption {
+      type = t.str;
+    };
     __contentAddressed = lib.mkOption {
       type = t.bool;
       default = false;

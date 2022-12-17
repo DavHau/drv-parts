@@ -8,15 +8,17 @@
     imports = [drv-parts.modules.mkDerivation];
 
     # set options
-    name = "hello";
-    src = pkgs.fetchurl {
-      url = "mirror://gnu/hello/hello-2.12.1.tar.gz";
-      sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
+    pname = "hello";
+    version = pkgs.hello.version;
+    src = pkgs.hello.src;
+    doCheck = true;
+  };
+  makePackage = module: let
+    drv = pkgs.lib.evalModules {
+      specialArgs = {inherit (pkgs) stdenv; nixpkgsConfig = pkgs.config;};
+      modules = [module];
     };
-  };
-  makePackage = module: pkgs.lib.evalModules {
-    specialArgs = {inherit (pkgs) stdenv; nixpkgsConfig = pkgs.config;};
-    modules = [module];
-  };
+  in
+    drv.config.final.derivation;
 in
   makePackage hello
