@@ -12,13 +12,7 @@
     version = pkgs.hello.version;
     src = pkgs.hello.src;
     doCheck = true;
+    stdenv = pkgs.stdenv;
   };
-  makePackage = module: let
-    drv = pkgs.lib.evalModules {
-      specialArgs = {inherit (pkgs) stdenv; nixpkgsConfig = pkgs.config;};
-      modules = [module];
-    };
-  in
-    drv.config.final.derivation;
 in
-  makePackage hello
+  drv-parts.lib.derivationFromModules hello

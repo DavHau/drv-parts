@@ -28,5 +28,5 @@ in
       drv-backends
       modules
       ;
-    lib = import ./lib {inherit lib;};
+    lib = import ./lib.nix {inherit lib;};
   }

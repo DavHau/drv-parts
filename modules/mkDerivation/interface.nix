@@ -1,4 +1,4 @@
-{config, lib, stdenv, nixpkgsConfig, ...}: let
+{config, lib, ...}: let
   l = lib // builtins;
   t = l.types;
   optNullOrStr = l.mkOption {
@@ -30,16 +30,13 @@
     default = null;
   };
 
-in rec {
-  imports = [
-    ../derivation-common
-  ];
+  drvPartsOptions = {
+    stdenv = l.mkOption {
+      type = t.attrs;
+    };
+  };
 
-  # signal that all options should be passed to the final derivation function
-  config.argsForward = l.mapAttrs (_: _: true) options;
-
-  options = {
-
+  forwardedOptions = {
     # from derivation
     builder = optPackage;
     __contentAddressed = optNullOrBool;
@@ -196,4 +193,14 @@ in rec {
     tarballs = optList;
     dontCopyDist = optNullOrBool;
   };
+
+in {
+  imports = [
+    ../derivation-common
+  ];
+
+  # signal that all options should be passed to the final derivation function
+  config.argsForward = l.mapAttrs (_: _: true) forwardedOptions;
+
+  options = forwardedOptions // drvPartsOptions;
 }

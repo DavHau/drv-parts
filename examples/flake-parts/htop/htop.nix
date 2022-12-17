@@ -1,4 +1,4 @@
-{config, lib, stdenv, drv-backends, ...}: let
+{config, lib, drv-backends, ...}: let
   deps = config.deps;
 in {
 
@@ -8,11 +8,11 @@ in {
   options = {
     sensorsSupport = lib.mkOption {
       type = lib.types.bool;
-      default = stdenv.isLinux;
+      default = config.stdenv.isLinux;
     };
     systemdSupport = lib.mkOption {
       type = lib.types.bool;
-      default = stdenv.isLinux;
+      default = config.stdenv.isLinux;
     };
   };
 
@@ -42,7 +42,7 @@ in {
     nativeBuildInputs = [ deps.autoreconfHook ];
 
     buildInputs = [ deps.ncurses ]
-      ++ lib.optional stdenv.isDarwin deps.IOKit
+      ++ lib.optional config.stdenv.isDarwin deps.IOKit
       ++ lib.optional config.sensorsSupport deps.lm_sensors
       ++ lib.optional config.systemdSupport deps.systemd
     ;

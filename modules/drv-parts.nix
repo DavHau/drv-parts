@@ -12,11 +12,8 @@ in {
             t.submoduleWith {
               modules = [./derivation-common];
               specialArgs = {
-                # inherit pkgs;
-                inherit (pkgs) stdenv;
                 inherit (inputs.drv-parts) drv-backends;
                 inherit (config) dependencySets;
-                nixpkgsConfig = pkgs.config;
               };
             }
           );
