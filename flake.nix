@@ -13,10 +13,10 @@
     flake-parts,
     nixpkgs,
     ...
-  }: let
+  } @ inputs: let
     defaultNix = import ./default.nix {inherit (nixpkgs) lib;};
   in
-    flake-parts.lib.mkFlake {inherit self;} {
+    flake-parts.lib.mkFlake {inherit inputs;} {
       systems = ["x86_64-linux"];
 
       flake = {
