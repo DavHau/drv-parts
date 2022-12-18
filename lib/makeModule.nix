@@ -1,4 +1,4 @@
-{lib, mkDerivationBackend}:
+{lib}:
 defaultNix: let
   l = lib // builtins;
   t = l.types;
@@ -12,15 +12,10 @@ defaultNix: let
     || (l.hasPrefix "for" argName)
     || (l.hasSuffix "Support" argName);
 
+  mkFlagOption = flagName: _: l.mkOption {type = t.bool;};
+
   # create a nixos option for a flag
-  makeFlagOptions = args:
-    l.mapAttrs
-    (argName: hasDefault:
-      l.mkOption {
-        type = t.bool;
-      }
-    )
-    args;
+  makeFlagOptions = l.mapAttrs mkFlagOption;
 
   # the arguments of the default.nix
   args = (l.functionArgs defaultNixImported);
@@ -34,6 +29,14 @@ defaultNix: let
   # generated nixos options for all flags
   flagOptions = makeFlagOptions flagArgs;
 
+  throwMissingDepsError = missingDepNames: throw ''
+    You are trying to generate a module from a legacy default.nix file
+      located under ${defaultNix},
+      but the `deps` option is not populated with all required dependencies.
+    The following dependencies are missing:
+      - ${l.concatStringsSep "\n  - " missingDepNames}
+  '';
+
   # Ensure that all required default.nix dependencies are passed via `deps`.
   # This is a bit hacky. It would be nicer if we could define `deps.{foo}`
   #   as an individual option, but `deps` is already defined as `coercedTo`
@@ -44,19 +47,7 @@ defaultNix: let
   in
     if missingDeps == {}
     then deps
-    else (
-      throw ''
-        You are trying to generate a module from a legacy default.nix file
-          located under ${defaultNix},
-          but the `deps` option is not populated with all required dependencies.
-        The following dependencies are missing:
-          - ${l.concatStringsSep "\n  - " missingDepNames}
-      ''
-    );
-
-  # removes flags from derivation arguments.
-  removeFlags = args:
-    l.filterAttrs (argName: _: ! flagArgs ? ${argName}) args;
+    else throwMissingDepsError missingDepNames;
 
   # TODO: Can we use the module system's merge logic here instead?
   mergeValue = name: a: b:
@@ -70,55 +61,45 @@ defaultNix: let
     then a // b
     else b;
 
+  mergeDrvArgs = args: oldArgs:
+    l.mapAttrs
+    (argName: val: mergeValue argName (oldArgs.${argName} or null) val)
+    args;
+
   # overrides a derivation with given arguments
   overrideDrv = drv: args:
     drv.overrideAttrs
-    (old:
-      l.mapAttrs
-      (argName: val: mergeValue argName (old.${argName} or null) val)
-      args
-    );
+    (old: mergeDrvArgs args old);
 
 in {config, ...}: {
 
-  imports = [mkDerivationBackend ];
+  imports = [../modules/mkDerivation/interface.nix];
 
   options = flagOptions;
 
   config = let
 
+    # raises errors if a dependency is missing from `config.deps`
     ensuredDeps = ensureDepsPopulated config.deps;
 
-    flagArgs' =
-      l.mapAttrs
-      (argName: _: config.${argName})
-      flagArgs;
+    pickFlag = flagName: _: config.${flagName};
+    pickDep = depName: _: ensuredDeps.${depName};
 
-    depArgs' = (l.mapAttrs (depName: _: ensuredDeps.${depName}) depArgs);
+    flagArgs' = l.mapAttrs pickFlag flagArgs;
+    depArgs' = l.mapAttrs pickDep depArgs;
 
-    # call the default.nix passing only its required arguments (flags + deps);
-    derivationOrig =
-      defaultNixImported (flagArgs' // depArgs');
+    # the arguments required to call the given default.nix style package func.
+    packageFunctionArgs = flagArgs' // depArgs';
 
-    /*
-      We need to override the derivation to apply the rest of the mkDerivation
-        arguments that might have been defined by the user.
-      TODO: There is a problem:
-        Some of the derivation args set by the default.nix are now
-        overridden with defaults from `/modules/mkDerivation`.
+    # call the package func passing only its required arguments (flags + deps);
+    derivationOrig = defaultNixImported packageFunctionArgs;
 
-        The root cause of this is likely the custom merging done by `overideDrv`.
-        It does not have a clue which of the options are defaults, and which are
-          not.
-        If we could hand over the merging to the module system, this might
-          behave better.
-    */
     finalDerivation =
-      (overrideDrv derivationOrig (removeFlags config.final.derivation-args));
+      (overrideDrv derivationOrig config.final.derivation-args);
 
   in
     {
       deps.lib = lib;
-      final.derivation = l.mkForce finalDerivation;
+      final.derivation = finalDerivation;
     };
 }

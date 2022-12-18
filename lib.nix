@@ -1,6 +1,5 @@
 {
-  lib ? import <nixpkgs/lib>,
-  drv-backends,
+  lib ? import <nixpkgs/lib>
 }:
 let
   l = lib // builtins;
@@ -14,7 +13,6 @@ let
 
   makeModule = import ./lib/makeModule.nix {
     inherit lib;
-    mkDerivationBackend = drv-backends.mkDerivation;
   };
 in
   {
