@@ -12,11 +12,8 @@ in {
             t.submoduleWith {
               modules = [./derivation-common];
               specialArgs = {
-                # inherit pkgs;
-                inherit (pkgs) stdenv;
                 inherit (inputs.drv-parts) drv-backends;
                 inherit (config) dependencySets;
-                nixpkgsConfig = pkgs.config;
               };
             }
           );
@@ -98,7 +95,7 @@ in {
       This exposes the `.derivation` attribute (the actual derivation) of each
         defined `pkgs.xxx` under the flake output `packages`.
     */
-    config.packages = l.mapAttrs (name: pkg: pkg.derivation) config.drvs;
+    config.packages = l.mapAttrs (name: pkg: pkg.final.derivation) config.drvs;
   };
 
 }

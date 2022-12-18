@@ -57,7 +57,10 @@
 
           allDeps = self'.packages // depsFromNixpkgs;
 
-          depsMod = {deps = allDeps;};
+          commonModule = {
+            deps = allDeps;
+            stdenv = pkgs.stdenv;
+          };
 
         in {
 
@@ -78,34 +81,34 @@
           */
 
           # htop defined via submodule
-          htop.imports = [depsMod (makeModule (nixpkgs + /pkgs/tools/system/htop/default.nix))];
+          htop.imports = [commonModule (makeModule (nixpkgs + /pkgs/tools/system/htop/default.nix))];
           # these options have been generated automatically by `makeModule`
           htop.systemdSupport = false;
           htop.sensorsSupport = true;
 
-          lm_sensors.imports = [depsMod (makeModule (nixpkgs + /pkgs/os-specific/linux/lm-sensors/default.nix))];
+          lm_sensors.imports = [commonModule (makeModule (nixpkgs + /pkgs/os-specific/linux/lm-sensors/default.nix))];
           # `sensord` and `rrdtool` are bool flags, but because of their maes,
           #   makeModule detected them as dependencies.
           lm_sensors.deps.sensord = false;
           lm_sensors.deps.rrdtool = null;
 
-          ncurses.imports = [depsMod (makeModule (nixpkgs + /pkgs/development/libraries/ncurses/default.nix))];
+          ncurses.imports = [commonModule (makeModule (nixpkgs + /pkgs/development/libraries/ncurses/default.nix))];
           ncurses.deps.abiVersion = "6";
           ncurses.mouseSupport = false;
           ncurses.unicodeSupport = true;
           ncurses.withCxx = true;
           ncurses.enableStatic = false;
 
-          bash.imports = [depsMod (makeModule (nixpkgs + /pkgs/shells/bash/5.1.nix))];
+          bash.imports = [commonModule (makeModule (nixpkgs + /pkgs/shells/bash/5.1.nix))];
           bash.deps.interactive = false;
           bash.withDocs = false;
           bash.forFHSEnv = false;
 
-          texinfo.imports = [depsMod (makeModule (nixpkgs + /pkgs/development/tools/misc/texinfo/6.8.nix))];
+          texinfo.imports = [commonModule (makeModule (nixpkgs + /pkgs/development/tools/misc/texinfo/6.8.nix))];
           texinfo.deps.interactive = false;
 
-          bison.imports = [depsMod (makeModule (nixpkgs + /pkgs/development/tools/parsing/bison/default.nix))];
-          readline81.imports = [depsMod (makeModule (nixpkgs + /pkgs/development/libraries/readline/8.1.nix))];
+          bison.imports = [commonModule (makeModule (nixpkgs + /pkgs/development/tools/parsing/bison/default.nix))];
+          readline81.imports = [commonModule (makeModule (nixpkgs + /pkgs/development/libraries/readline/8.1.nix))];
         };
       };
     };

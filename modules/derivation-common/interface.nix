@@ -1,15 +1,63 @@
-{config, lib, dependencySets ? {}, ...}: let
+{config, lib, dependencySets, ...}: let
   l = lib // builtins;
   t = l.types;
   callDeps = func: func dependencySets;
-in {
-  options = {
+  optNullOrBool = l.mkOption {
+    type = t.nullOr t.bool;
+    default = null;
+  };
+  optListOfStr = l.mkOption {
+    type = t.nullOr (t.listOf t.str);
+    default = null;
+  };
+  optNullOrStr = l.mkOption {
+    type = t.nullOr t.str;
+    default = null;
+  };
+
+  # options forwarded to the final derivation function call
+  forwardedOptions = {
+    # basic arguments
+    args = optListOfStr;
+    outputs = lib.mkOption {
+      type = t.listOf t.str;
+      default = ["out"];
+    };
+    __structuredAttrs = lib.mkOption {
+      type = t.nullOr t.bool;
+      default = null;
+    };
+
+    # advanced attributes
+    allowedReferences = optListOfStr;
+    allowedRequisites = optListOfStr;
+    disallowedReferences = optListOfStr;
+    disallowedRequisites = optListOfStr;
+    exportReferenceGraph = lib.mkOption {
+      # TODO: make type stricter
+      type = t.nullOr (t.listOf (t.either t.str t.package));
+      default = null;
+    };
+    impureEnvVars = optListOfStr;
+    outputHash = optNullOrStr;
+    outputHashAlgo = optNullOrStr;
+    outputHashMode = optNullOrStr;
+    passAsFile = optListOfStr;
+    preferLocalBuild = optListOfStr;
+    allowSubstitutes = optNullOrBool;
+  };
+
+  # drv-parts specific options, not forwardedto the final deirvation call
+  drvPartsOptions = {
+    argsForward = l.mkOption {
+      type = t.attrsOf t.bool;
+    };
 
     # this will be the resulting derivation
-    derivation = lib.mkOption {
-      type = t.package;
+    final.derivation-args = l.mkOption {
+      type = t.attrs;
     };
-    drvPath = lib.mkOption {
+    final.derivation = lib.mkOption {
       type = t.package;
     };
 
@@ -41,76 +89,13 @@ in {
       '';
     };
 
-    # basic arguments
-    args = lib.mkOption {
-      type = t.nullOr (t.listOf t.str);
-      default = null;
-    };
     env = lib.mkOption {
       type = t.attrsOf (t.oneOf [t.bool t.int t.str t.path t.package]);
       default = {};
     };
-    outputs = lib.mkOption {
-      type = t.listOf t.str;
-      default = ["out"];
-    };
-    system = lib.mkOption {
-      type = t.str;
-    };
-    __structuredAttrs = lib.mkOption {
-      type = t.nullOr t.bool;
-      default = false;
-    };
 
-    # advanced attributes
-    allowedReferences = lib.mkOption {
-      type = t.nullOr (t.listOf t.str);
-      default = null;
-    };
-    allowedRequisites = lib.mkOption {
-      type = t.nullOr (t.listOf t.str);
-      default = null;
-    };
-    disallowedReferences = lib.mkOption {
-      type = t.nullOr (t.listOf t.str);
-      default = null;
-    };
-    disallowedRequisites = lib.mkOption {
-      type = t.nullOr (t.listOf t.str);
-      default = null;
-    };
-    exportReferenceGraph = lib.mkOption {
-      # TODO: make type stricter
-      type = t.listOf (t.either t.str t.package);
-      default = [];
-    };
-    impureEnvVars = lib.mkOption {
-      type = t.listOf t.str;
-      default = [];
-    };
-    outputHash = lib.mkOption {
-      type = t.nullOr t.str;
-      default = null;
-    };
-    outputHashAlgo = lib.mkOption {
-      type = t.nullOr t.str;
-      default = "sha256";
-    };
-    outputHashMode = lib.mkOption {
-      type = t.nullOr t.str;
-      default = "recursive";
-    };
-    passAsFile = lib.mkOption {
-      type = t.listOf t.str;
-      default = [];
-    };
-    preferLocalBuild = lib.mkOption {
-      type = t.bool;
-      default = false;
-    };
-    allowSubstitutes = lib.mkOption {
-      type = t.bool;
-      default = true;
-    };
   };
+in {
+  config.argsForward = l.mapAttrs (_: _: true) forwardedOptions;
+  options = forwardedOptions // drvPartsOptions;
 }

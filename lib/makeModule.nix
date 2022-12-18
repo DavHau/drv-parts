@@ -87,14 +87,14 @@ in {config, ...}: {
 
   config = let
 
-    deps' = ensureDepsPopulated config.deps;
+    ensuredDeps = ensureDepsPopulated config.deps;
 
     flagArgs' =
-      l.filterAttrs
-      (argName: _: flagArgs ? ${argName})
-      config.mkDerivationArgs;
+      l.mapAttrs
+      (argName: _: config.${argName})
+      flagArgs;
 
-    depArgs' = (l.mapAttrs (depName: _: deps'.${depName}) depArgs);
+    depArgs' = (l.mapAttrs (depName: _: ensuredDeps.${depName}) depArgs);
 
     # call the default.nix passing only its required arguments (flags + deps);
     derivationOrig =
@@ -114,11 +114,11 @@ in {config, ...}: {
           behave better.
     */
     finalDerivation =
-      (overrideDrv derivationOrig (removeFlags config.mkDerivationArgs));
+      (overrideDrv derivationOrig (removeFlags config.final.derivation-args));
 
   in
     {
       deps.lib = lib;
-      derivation = l.mkForce finalDerivation;
+      final.derivation = l.mkForce finalDerivation;
     };
 }

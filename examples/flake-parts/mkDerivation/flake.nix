@@ -24,6 +24,8 @@
           # select mkDerivation as a backend for this package
           imports = [drv-parts.modules.mkDerivation];
 
+          stdenv = pkgs.stdenv;
+
           # set options
           name = "hello";
           src = pkgs.fetchurl {

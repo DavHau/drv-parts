@@ -1,6 +1,6 @@
 {
   lib ? import <nixpkgs/lib>,
-  drv-parts ? import ../../../default.nix,
+  drv-parts ? import ../../../default.nix {inherit lib;},
   ...
 }: let
   hello = {
@@ -13,8 +13,5 @@
     args = ["-c" "echo $name > $out"];
     system = builtins.currentSystem;
   };
-  makePackage = module: lib.evalModules {
-    modules = [module];
-  };
 in
-  makePackage hello
+  drv-parts.lib.derivationFromModules hello

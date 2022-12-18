@@ -1,6 +1,6 @@
 {
   pkgs ? import <nixpkgs> {},
-  drv-parts ? import ../../../default.nix,
+  drv-parts ? import ../../../default.nix {inherit (pkgs) lib;},
   ...
 }: let
   hello = {
@@ -8,15 +8,11 @@
     imports = [drv-parts.modules.mkDerivation];
 
     # set options
-    name = "hello";
-    src = pkgs.fetchurl {
-      url = "mirror://gnu/hello/hello-2.12.1.tar.gz";
-      sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
-    };
-  };
-  makePackage = module: pkgs.lib.evalModules {
-    specialArgs = {inherit (pkgs) stdenv; nixpkgsConfig = pkgs.config;};
-    modules = [module];
+    pname = "hello";
+    version = pkgs.hello.version;
+    src = pkgs.hello.src;
+    doCheck = true;
+    stdenv = pkgs.stdenv;
   };
 in
-  makePackage hello
+  drv-parts.lib.derivationFromModules hello

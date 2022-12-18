@@ -1,4 +1,8 @@
+{
+  lib ? import <nixpkgs/lib>,
+}:
 let
+  l = lib // builtins;
   modules = {
     # import one of these to pick the backend for your derivation
     # TODO: add more backends like for ex.: buildPythonPackage, etc.
@@ -11,7 +15,18 @@ let
     # the base derivation type used by the drv-parts module
     derivation-common = ./modules/derivation-common;
   };
+
+  drv-backends = {
+    inherit (modules)
+      derivation
+      mkDerivation
+      ;
+  };
 in
   {
-    inherit modules;
+    inherit
+      drv-backends
+      modules
+      ;
+    lib = import ./lib.nix {inherit drv-backends lib;};
   }
