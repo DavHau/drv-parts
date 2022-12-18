@@ -36,6 +36,12 @@
           # these options have been generated automatically by `makeModule`
           htop.systemdSupport = true;
           htop.sensorsSupport = true;
+          htop.buildInputs = [
+            # add build inputs here
+          ];
+          htop.patches = [
+            # add patches here
+          ];
 
           # `sensord` and `rrdtool` are bool flags, but because of their names,
           #   makeModule detected them as dependencies.

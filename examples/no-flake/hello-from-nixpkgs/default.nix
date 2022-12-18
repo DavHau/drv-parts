@@ -12,7 +12,7 @@
   helloDeps = {
 
     deps = {
-      hello = finalHello;
+      inherit hello; # the default.nix of hello wants hello as an input.
       inherit (pkgs)
         fetchurl
         stdenv
@@ -25,9 +25,9 @@
     stdenv = pkgs.stdenv;
   };
 
-  finalHello = drv-parts.lib.derivationFromModules [
+  hello = drv-parts.lib.derivationFromModules [
     helloDefaultNix
     helloDeps
   ];
 in
-  finalHello
+  hello

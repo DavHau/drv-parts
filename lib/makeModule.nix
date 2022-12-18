@@ -94,6 +94,8 @@ in {config, ...}: {
     # call the package func passing only its required arguments (flags + deps);
     derivationOrig = defaultNixImported packageFunctionArgs;
 
+    # override the derivation produced by the package func with the values
+    # coming from the package module.
     finalDerivation =
       (overrideDrv derivationOrig config.final.derivation-args);
 
