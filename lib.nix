@@ -12,12 +12,14 @@ let
     drv.config.final.derivation;
 
   makeModule = import ./lib/makeModule.nix {
-    inherit lib;
+    inherit lib drvPartsLib;
   };
-in
-  {
+
+  drvPartsLib = {
     inherit
       derivationFromModules
       makeModule
       ;
-  }
+  };
+in
+  drvPartsLib

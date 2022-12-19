@@ -19,7 +19,7 @@
       # enable the drv-parts plugin for flake-parts
       imports = [drv-parts.flakeModule];
 
-      perSystem = {config, pkgs, ...}: {
+      perSystem = {config, pkgs, lib, ...}: {
 
         imports = let
           modulesMadeFromNixpkgs = import ./drvs.nix {
@@ -30,8 +30,8 @@
         in
           [modulesMadeFromNixpkgs];
 
-        # now, that we have converted nixpkgs package functions to modules,
-        # we can use the module system to configure the packages
+        # Because nixpkgs package functions were conmverted to modules,
+        # configuration/overriding can be done like this:
         drvs = {
           # these options have been generated automatically by `makeModule`
           htop.systemdSupport = true;
@@ -58,8 +58,10 @@
         checks =
           # assure that converting default.nix packages to modules did
           # not impact the drv hash
-          assert config.packages.htop.drvPath == pkgs.htop.drvPath;
+          assert config.packages.htop.drvPath == config.packages.htop-nixpkgs.drvPath;
           config.packages;
+
+        packages.htop-nixpkgs = pkgs.htop;
       };
     };
 }

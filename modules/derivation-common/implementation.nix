@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  options,
   ...
 }: let
   l = lib // builtins;
@@ -16,21 +17,27 @@
   envChecked =
     l.mapAttrs
     (key: val:
-      if finalArgs ? ${key}
+      if config.argsForward.${key} or false
       then throw (envCollisionError key)
       else val)
     config.env;
 
+  drvDebugName =
+    if config ? name && config.name != null
+    then config.name
+    else config.pname;
+
   # generates error message for env variable collision
   envCollisionError = key: ''
-    The environment variable declared via env.${key} collides with option ${key}.
-    Specify the option instead, or rename the environment variable.
+    Error while evaluating definitions for derivation ${drvDebugName}
+    The environment variable defined via `env.${key}' collides with the top-level option `${key}'.
+    Specify the top-level option instead, or rename the environment variable.
   '';
 
   # all args that are massed directly to mkDerivation
   args =
-    envChecked
-    // finalArgs
+    finalArgs
+    // envChecked
     ;
 
 in {

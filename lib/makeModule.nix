@@ -1,21 +1,24 @@
-{lib}:
+{lib, drvPartsLib}:
 defaultNix: let
   l = lib // builtins;
   t = l.types;
 
   defaultNixImported = import defaultNix;
 
+  isMatch = regex: str: (l.match regex str) != null;
+
   # determine if an argument is a flag by looking at its name.
   isBoolFlag = argName:
-    (l.hasPrefix "with" argName)
-    || (l.hasPrefix "enable" argName)
-    || (l.hasPrefix "for" argName)
-    || (l.hasSuffix "Support" argName);
+    (isMatch ''with[A-Z].*'' argName)
+    || (isMatch ''enable[A-Z].*'' argName)
+    || (isMatch ''for[A-Z].*'' argName)
+    || (isMatch ".*Support" argName);
 
-  mkFlagOption = flagName: _: l.mkOption {type = t.bool;};
+  # creates an option of type bool
+  mkBoolOption = flagName: _: l.mkOption {type = t.bool;};
 
-  # create a nixos option for a flag
-  makeFlagOptions = l.mapAttrs mkFlagOption;
+  # creates bool options for a set of flags
+  makeFlagOptions = l.mapAttrs mkBoolOption;
 
   # the arguments of the default.nix
   args = (l.functionArgs defaultNixImported);
@@ -29,6 +32,7 @@ defaultNix: let
   # generated nixos options for all flags
   flagOptions = makeFlagOptions flagArgs;
 
+  # throws error listing missing deps.xxx entries
   throwMissingDepsError = missingDepNames: throw ''
     You are trying to generate a module from a legacy default.nix file
       located under ${defaultNix},
@@ -49,29 +53,12 @@ defaultNix: let
     then deps
     else throwMissingDepsError missingDepNames;
 
-  # TODO: Can we use the module system's merge logic here instead?
-  mergeValue = name: a: b:
-    if a == null
-    then b
-    else if b == null
-    then a
-    else if l.isList a
-    then l.unique (a ++ b)
-    else if l.isAttrs a
-    then a // b
-    else b;
+  # override func that exposes mkDerivation arguments
+  passthruMkDrvArgs = oldArgs: {passthru.__mkDrvArgs = oldArgs;};
 
-  mergeDrvArgs = args: oldArgs:
-    l.mapAttrs
-    (argName: val: mergeValue argName (oldArgs.${argName} or null) val)
-    args;
+  getMkDrvArgs = drv: (drv.overrideAttrs passthruMkDrvArgs).__mkDrvArgs;
 
-  # overrides a derivation with given arguments
-  overrideDrv = drv: args:
-    drv.overrideAttrs
-    (old: mergeDrvArgs args old);
-
-in {config, ...}: {
+in {config, options, ...}: {
 
   imports = [../modules/mkDerivation/interface.nix];
 
@@ -84,7 +71,6 @@ in {config, ...}: {
 
     pickFlag = flagName: _: config.${flagName};
     pickDep = depName: _: ensuredDeps.${depName};
-
     flagArgs' = l.mapAttrs pickFlag flagArgs;
     depArgs' = l.mapAttrs pickDep depArgs;
 
@@ -94,14 +80,55 @@ in {config, ...}: {
     # call the package func passing only its required arguments (flags + deps);
     derivationOrig = defaultNixImported packageFunctionArgs;
 
-    # override the derivation produced by the package func with the values
-    # coming from the package module.
-    finalDerivation =
-      (overrideDrv derivationOrig config.final.derivation-args);
+    # the arguments passed to mkDerivation by the default.nix package func
+    origMkDrvArgs = getMkDrvArgs derivationOrig;
+
+    # Returns true if a given argName is a top-level config field for drv-parts'
+    #   mkDerivation.
+    isTopLevelArg = argName: _: config.argsForward ? ${argName};
+
+    # all mkDerivation args originating from the default.nix func
+    origMkDrvArgsTopLevel = l.filterAttrs isTopLevelArg origMkDrvArgs;
+    # all env variables originating from the default.nix func
+    origMkDrvArgsEnv =
+      l.filterAttrs (argName: _: ! origMkDrvArgsTopLevel ? ${argName}) origMkDrvArgs;
+
+    # modules for the mkDerivation and env args originating from the default.nix
+    origMkDrvArgsModule = {config = origMkDrvArgsTopLevel;};
+    origMkDrvEnvModule = {config.env = origMkDrvArgsEnv;};
+
+    # all top-level args for drv-part's mkDerivation to map over.
+    allUserArgs = config.argsForward // flagArgs;
+
+    mkUserConfigOverride = argName: _:
+      l.mkOverride options.${argName}.highestPrio config.${argName};
+    # a copy of all user defined args for drv-part's mkDerivation including the
+    # priority (this is required to merge once more in finalDrvModule)
+    userConfig = l.mapAttrs mkUserConfigOverride allUserArgs;
+    userArgsModule = {config = userConfig;};
+    userEnvModule = {config.env = config.env;};
+
+    # nested drv-parts evaluation to include the mkDerivation arguments
+    # extracted from the default.nix package func
+    finalDrvModule = {
+      imports = [
+        ../modules/mkDerivation
+        origMkDrvArgsModule
+        origMkDrvEnvModule
+        userArgsModule
+        userEnvModule
+      ];
+      _file = "finalDrvModule";
+      options = flagOptions;
+      config.stdenv = config.stdenv;
+    };
+
+    finalDerivation = drvPartsLib.derivationFromModules [finalDrvModule];
 
   in
-    {
-      deps.lib = lib;
-      final.derivation = finalDerivation;
-    };
+
+  {
+    deps.lib = lib;
+    final.derivation = finalDerivation;
+  };
 }
