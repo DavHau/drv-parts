@@ -19,10 +19,7 @@
   forwardedOptions = {
     # basic arguments
     args = optListOfStr;
-    outputs = lib.mkOption {
-      type = t.listOf t.str;
-      default = ["out"];
-    };
+    outputs = optListOfStr;
     __structuredAttrs = lib.mkOption {
       type = t.nullOr t.bool;
       default = null;
@@ -53,10 +50,10 @@
       type = t.attrsOf t.bool;
     };
 
-    # this will be the resulting derivation
     final.derivation-args = l.mkOption {
       type = t.attrs;
     };
+    # this will be the resulting derivation
     final.derivation = lib.mkOption {
       type = t.package;
     };

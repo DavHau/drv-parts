@@ -1,5 +1,5 @@
 {
-  lib ? import <nixpkgs/lib>,
+  lib ? import <nixpkgs/lib>
 }:
 let
   l = lib // builtins;
@@ -10,9 +10,16 @@ let
     };
   in
     drv.config.final.derivation;
-in
-  {
+
+  makeModule = import ./lib/makeModule.nix {
+    inherit lib drvPartsLib;
+  };
+
+  drvPartsLib = {
     inherit
       derivationFromModules
+      makeModule
       ;
-  }
+  };
+in
+  drvPartsLib
