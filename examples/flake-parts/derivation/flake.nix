@@ -2,7 +2,7 @@
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "nixpkgs/nixos-unstable";
-    drv-parts.url = "nixpkgs";
+    drv-parts.url = "github:DavHau/drv-parts";
   };
 
   outputs = {
