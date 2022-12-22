@@ -123,7 +123,7 @@
         options.deps = l.mkOption {
           description = "spcify a package for the dependency bash"
           type = t.raw;
-          default = config.fromDeps.bash;
+          default = config.depsFrom.bash;
         }
       }
     */
