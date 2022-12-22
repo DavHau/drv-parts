@@ -10,7 +10,6 @@
     drv = pkgs.lib.evalModules {
       specialArgs = {
         inherit (drv-parts) drv-backends;
-        dependencySets = {inherit pkgs;};
       };
       modules = modules;
     };
@@ -23,6 +22,7 @@
       stdenv = pkgs.stdenv;
       src = l.mkForce pkgs.htop.src;
       version =  l.mkForce pkgs.htop.version;
+      depsFrom = pkgs;
     }
   ];
 

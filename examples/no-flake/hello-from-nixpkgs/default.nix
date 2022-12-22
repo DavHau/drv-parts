@@ -11,16 +11,7 @@
   # define another module to set `deps`
   helloDeps = {
 
-    deps = {
-      inherit hello; # the default.nix of hello wants hello as an input.
-      inherit (pkgs)
-        fetchurl
-        stdenv
-        callPackage
-        nixos
-        testers
-        ;
-    };
+    depsFrom = pkgs // {inherit hello;};
 
     stdenv = pkgs.stdenv;
   };

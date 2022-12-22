@@ -13,7 +13,6 @@ in {
               modules = [./derivation-common];
               specialArgs = {
                 inherit (inputs.drv-parts) drv-backends;
-                inherit (config) dependencySets;
               };
             }
           );
@@ -39,13 +38,9 @@ in {
               # select mkDerivation as a backend for this package
               imports = [drv-parts.modules.mkDerivation];
 
-              # Define dependencies from the "outer world" only via `deps`.
-              # This allows for easy overriding later.
-              deps = {pkgs, ...} {
-                inherit (pkgs)
-                  fetchurl
-                  python
-                  ;
+              # Define dependencies from the "outer world" only via `depsFrom`.
+              # This allows for easy overriding via `config.deps` later.
+              depsFrom = {inherit (pkgs) fetchurl python};
               };
 
               # set options
@@ -63,23 +58,6 @@ in {
                 python -c "print('example')" > $out/example
               '''';
             };
-          '';
-        };
-
-        dependencySets = l.mkOption {
-          type = t.lazyAttrsOf t.raw;
-          default = {
-            inherit pkgs inputs';
-            inherit (self') packages;
-          };
-          description = ''
-            Define the package sets which can be used to pick dependencies from.
-            Basically this specifies the arguments passed to the function defined via drvs.<name>.deps.
-          '';
-          example = lib.literalExpression ''
-            {
-              inherit pkgs inputs';
-            }
           '';
         };
       };
