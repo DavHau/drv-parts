@@ -62,14 +62,14 @@ in {config, options, ...}: {
 
   imports = [../modules/mkDerivation/interface.nix];
 
-  options = flagOptions;
+  options.flags = flagOptions;
 
   config = let
 
     # raises errors if a dependency is missing from `config.deps`
     ensuredDeps = ensureDepsPopulated config.deps;
 
-    pickFlag = flagName: _: config.${flagName};
+    pickFlag = flagName: _: config.flags.${flagName};
     pickDep = depName: _: ensuredDeps.${depName};
     flagArgs' = l.mapAttrs pickFlag flagArgs;
     depArgs' = l.mapAttrs pickDep depArgs;

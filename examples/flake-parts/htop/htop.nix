@@ -5,12 +5,14 @@ in {
   # select mkDerivation as a backend for this package
   imports = [drv-backends.mkDerivation];
 
-  options = {
+  options.flags = {
     sensorsSupport = lib.mkOption {
+      description = "enable support for sensors";
       type = lib.types.bool;
       default = config.stdenv.isLinux;
     };
     systemdSupport = lib.mkOption {
+      description = "enable support for systemd";
       type = lib.types.bool;
       default = config.stdenv.isLinux;
     };
@@ -43,12 +45,12 @@ in {
 
     buildInputs = [ deps.ncurses ]
       ++ lib.optional config.stdenv.isDarwin deps.IOKit
-      ++ lib.optional config.sensorsSupport deps.lm_sensors
-      ++ lib.optional config.systemdSupport deps.systemd
+      ++ lib.optional config.flags.sensorsSupport deps.lm_sensors
+      ++ lib.optional config.flags.systemdSupport deps.systemd
     ;
 
     configureFlags = [ "--enable-unicode" "--sysconfdir=/etc" ]
-      ++ lib.optional config.sensorsSupport "--with-sensors"
+      ++ lib.optional config.flags.sensorsSupport "--with-sensors"
     ;
 
     postFixup =
@@ -56,8 +58,8 @@ in {
         optionalPatch = pred: so: lib.optionalString pred "patchelf --add-needed ${so} $out/bin/htop";
       in
       ''
-        ${optionalPatch config.sensorsSupport "${deps.lm_sensors}/lib/libsensors.so"}
-        ${optionalPatch config.systemdSupport "${deps.systemd}/lib/libsystemd.so"}
+        ${optionalPatch config.flags.sensorsSupport "${deps.lm_sensors}/lib/libsensors.so"}
+        ${optionalPatch config.flags.systemdSupport "${deps.systemd}/lib/libsystemd.so"}
       '';
 
     meta = with lib; {

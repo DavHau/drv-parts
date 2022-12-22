@@ -34,8 +34,10 @@
         # configuration/overriding can be done like this:
         drvs = {
           # these options have been generated automatically by `makeModule`
-          htop.systemdSupport = true;
-          htop.sensorsSupport = true;
+          htop.flags = {
+            systemdSupport = true;
+            sensorsSupport = true;
+          };
           htop.buildInputs = [
             # add build inputs here
           ];
@@ -49,10 +51,12 @@
           lm_sensors.deps.rrdtool = null;
 
           ncurses.deps.abiVersion = "6";
-          ncurses.mouseSupport = false;
-          ncurses.unicodeSupport = true;
-          ncurses.withCxx = true;
-          ncurses.enableStatic = false;
+          ncurses.flags = {
+            mouseSupport = false;
+            unicodeSupport = true;
+            withCxx = true;
+            enableStatic = false;
+          };
         };
 
         checks =
