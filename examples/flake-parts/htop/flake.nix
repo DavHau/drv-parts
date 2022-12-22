@@ -31,7 +31,7 @@
           htop-mod = {
             imports = [./htop.nix];
             pname = lib.mkForce "htop-mod";
-            sensorsSupport = false;
+            flags.sensorsSupport = false;
             stdenv = pkgs.stdenv;
           };
         };
