@@ -5,23 +5,19 @@ in {
   # select mkDerivation as a backend for this package
   imports = [drv-backends.mkDerivation];
 
-  options.flags = {
-    sensorsSupport = lib.mkOption {
-      description = "enable support for sensors";
-      type = lib.types.bool;
-      default = config.stdenv.isLinux;
-    };
-    systemdSupport = lib.mkOption {
-      description = "enable support for systemd";
-      type = lib.types.bool;
-      default = config.stdenv.isLinux;
-    };
-  };
-
   config = {
     # set options
     pname = "htop";
     version = "3.2.1";
+
+    flagsOffered = {
+      sensorsSupport = "enable support for sensors";
+      systemdSupport = "enable support for sensors";
+    };
+
+    # set defaults for flags
+    flags.sensorsSupport = lib.mkDefault config.stdenv.isLinux;
+    flags.systemdSupport = lib.mkDefault config.stdenv.isLinux;
 
     deps = {pkgs, ...}: {
       inherit (pkgs)

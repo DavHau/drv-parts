@@ -14,6 +14,11 @@
     type = t.nullOr t.str;
     default = null;
   };
+  mkFlag = description: l.mkOption {
+    inherit description;
+    type = t.bool;
+    default = false;
+  };
 
   # options forwarded to the final derivation function call
   forwardedOptions = {
@@ -48,6 +53,46 @@
   drvPartsOptions = {
     argsForward = l.mkOption {
       type = t.attrsOf t.bool;
+    };
+
+    /*
+      Helper option to define `flags`.
+      This makes the syntax for defining flags simpler and at the same time
+        prevents users to make mistakes like, for example, defining flags with
+        other types than bool.
+
+      This allows flags to be defined like this:
+      {
+        config.flagsOffered = {
+          enableFoo = "builds with foo support";
+          ...
+        };
+      }
+
+      ... instead of this:
+      {
+        options.flags = {
+          enableFoo = l.mkOption {
+            type = t.bool;
+            description = "builds with foo support";
+            default = false;
+          };
+          ...
+        }
+      }
+
+    */
+    flagsOffered = l.mkOption {
+      type = t.attrsOf t.str;
+      default = {};
+    };
+
+    # The flag options generated from `flagsOffered`
+    flags = l.mkOption {
+      type = t.submodule {
+        options = l.mapAttrs (_: mkFlag) config.flagsOffered;
+      };
+      default = {};
     };
 
     final.derivation-args = l.mkOption {
