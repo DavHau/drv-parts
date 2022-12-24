@@ -3,7 +3,7 @@
   t = l.types;
 in rec {
   imports = [
-    ../derivation-common
+    ../derivation-common/interface.nix
   ];
 
   # signal that all options should be passed to the final derivation function
