@@ -25,7 +25,7 @@
     stdenv = pkgs.stdenv;
   };
 
-  hello = drv-parts.lib.derivationFromModules [
+  hello = drv-parts.lib.derivationFromModules {} [
     helloDefaultNix
     helloDeps
   ];

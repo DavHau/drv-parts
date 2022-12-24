@@ -13,7 +13,7 @@ in {
               modules = [./derivation-common];
               specialArgs = {
                 inherit (inputs.drv-parts) drv-backends;
-                inherit (config) dependencySets;
+                inherit (config.drv-parts) dependencySets;
               };
             }
           );
@@ -66,7 +66,7 @@ in {
           '';
         };
 
-        dependencySets = l.mkOption {
+        drv-parts.dependencySets = l.mkOption {
           type = t.lazyAttrsOf t.raw;
           default = {
             inherit pkgs inputs';

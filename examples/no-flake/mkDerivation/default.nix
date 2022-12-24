@@ -22,4 +22,4 @@
     };
   };
 in
-  drv-parts.lib.derivationFromModules hello
+  drv-parts.lib.derivationFromModules {} hello
