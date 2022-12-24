@@ -32,27 +32,6 @@ defaultNix: let
   # generated nixos options for all flags
   flagOptions = makeFlagOptions flagArgs;
 
-  # throws error listing missing deps.xxx entries
-  throwMissingDepsError = missingDepNames: throw ''
-    You are trying to generate a module from a legacy default.nix file
-      located under ${defaultNix},
-      but the `deps` option is not populated with all required dependencies.
-    The following dependencies are missing:
-      - ${l.concatStringsSep "\n  - " missingDepNames}
-  '';
-
-  # Ensure that all required default.nix dependencies are passed via `deps`.
-  # This is a bit hacky. It would be nicer if we could define `deps.{foo}`
-  #   as an individual option, but `deps` is already defined as `coercedTo`
-  #   which does not support nested options.
-  ensureDepsPopulated = deps: let
-    missingDeps = l.filterAttrs (depName: _: ! deps ? ${depName}) depArgs;
-    missingDepNames = l.attrNames missingDeps;
-  in
-    if missingDeps == {}
-    then deps
-    else throwMissingDepsError missingDepNames;
-
   # override func that exposes mkDerivation arguments
   passthruMkDrvArgs = oldArgs: {passthru.__mkDrvArgs = oldArgs;};
 
@@ -66,11 +45,8 @@ in {config, options, ...}: {
 
   config = let
 
-    # raises errors if a dependency is missing from `config.deps`
-    ensuredDeps = ensureDepsPopulated config.deps;
-
     pickFlag = flagName: _: config.flags.${flagName};
-    pickDep = depName: _: ensuredDeps.${depName};
+    pickDep = depName: _: config.deps.${depName};
     flagArgs' = l.mapAttrs pickFlag flagArgs;
     depArgs' = l.mapAttrs pickDep depArgs;
 
@@ -125,10 +101,22 @@ in {config, options, ...}: {
 
     finalDerivation = drvPartsLib.derivationFromModules [finalDrvModule];
 
+    /*
+      Populate deps with some defaults.
+      `lib` should be taken from the current module.
+      `stdenv` should be taken from `config.stdenv`.
+    */
+    deps' = {
+      inherit lib;
+      inherit (config) stdenv;
+    };
+    deps = l.intersectAttrs depArgs deps';
+
   in
 
   {
-    deps.lib = lib;
+    deps = l.mkDefault deps;
+    depsRequired = l.mapAttrs (_: _: true) depArgs;
     final.derivation = finalDerivation;
   };
 }

@@ -23,9 +23,11 @@
         drvs = {
 
           # htop defined via submodule
-          htop.imports = [./htop.nix];
-
-          htop.stdenv = pkgs.stdenv;
+          htop = {
+            imports = [./htop.nix];
+            stdenv = pkgs.stdenv;
+            depsFrom = pkgs;
+          };
 
           # overriding htop
           htop-mod = {
@@ -33,6 +35,7 @@
             pname = lib.mkForce "htop-mod";
             flags.sensorsSupport = false;
             stdenv = pkgs.stdenv;
+            depsFrom = pkgs;
           };
         };
 

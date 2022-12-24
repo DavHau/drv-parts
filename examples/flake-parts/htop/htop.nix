@@ -19,15 +19,14 @@ in {
     flags.sensorsSupport = lib.mkDefault config.stdenv.isLinux;
     flags.systemdSupport = lib.mkDefault config.stdenv.isLinux;
 
-    deps = {pkgs, ...}: {
-      inherit (pkgs)
-        autoreconfHook
-        fetchFromGitHub
-        IOKit
-        lm_sensors
-        ncurses
-        systemd
-        ;
+    # This must be complete, otherwise options would be missing from `deps`.
+    depsRequired = {
+      autoreconfHook = true;
+      fetchFromGitHub = true;
+      IOKit = true;
+      lm_sensors = true;
+      ncurses = true;
+      systemd = true;
     };
 
     src = deps.fetchFromGitHub {

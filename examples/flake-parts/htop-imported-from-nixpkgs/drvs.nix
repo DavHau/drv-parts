@@ -5,42 +5,14 @@
   packages
 }:
 let
-  depsFromNixpkgs = {
-    inherit (pkgs)
-      # some of these packages could also be ported to drv-parts via
-      # makeModule, but for demonstration purposes, we want to keep the
-      # list short, and inherit them from nixpkgs instead.
-      autoreconfHook
-      bash
-      binutils
-      fetchurl
-      fetchFromGitHub
-      stdenv
-      IOKit
-      forFHSEnv
-      util-linux
-      help2man
-      m4
-      perl
-      flex
-      which
-      pkg-config
-      gpm
-      libintl
-      procps
-      xz
-      systemd
-      ;
-    buildPackages.perl = pkgs.perl;
-    buildPackages.stdenv.cc = pkgs.buildPackages.stdenv.cc;
-    # this can be null because we set `htop.systemdSupport = false`
-    # systemd = null;
-  };
-
-  allDeps = packages // depsFromNixpkgs;
 
   commonModule = {
-    deps = allDeps;
+    /*
+      To keep this simple, only a few packages have been converted to modules,
+        while the rest is still taken from nixpkgs.
+      `// pkgs` can be removed once all packages are modules.
+    */
+    depsFrom = packages // pkgs;
     stdenv = pkgs.stdenv;
   };
 
