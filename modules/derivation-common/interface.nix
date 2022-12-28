@@ -1,7 +1,6 @@
 {config, lib, dependencySets, ...}: let
   l = lib // builtins;
   t = l.types;
-  callDeps = func: func dependencySets;
   optNullOrBool = l.mkOption {
     type = t.nullOr t.bool;
     default = null;
@@ -116,12 +115,12 @@
 
         So deps should be specific, but not overly specific. For instance, the caller shouldn't have to know the version of a dependency in order to override it. The name should suffice. (e.g. `nix = nixVersions.nix_2_12` instead of `inherit (nixVersions) nix_2_12`.
       '';
-      type =
-        t.coercedTo
-        (t.functionTo (t.lazyAttrsOf t.raw))
-        callDeps
-        (t.lazyAttrsOf t.raw);
-      default = {};
+      type = t.submoduleWith {
+        # TODO: This could be made stricter by removing the freeformType
+        # Maybe add option `strictDeps = true/false` ? ;P
+        modules = [{freeformType = t.lazyAttrsOf t.raw;}];
+        specialArgs = dependencySets;
+      };
       example = lib.literalExpression ''
         {pkgs, inputs', ...}: {
           inherit (pkgs) stdenv;
