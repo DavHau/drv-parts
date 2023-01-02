@@ -7,8 +7,13 @@
   l = lib // builtins;
   t = l.types;
 
+  passAsFile =
+    if config.passAsFile == null
+    then {}
+    else l.genAttrs config.passAsFile (var: true);
+
   keepArg = key: val:
-    (config.argsForward.${key} or false)
+    (config.argsForward.${key} or false || passAsFile ? ${key})
     && (val != null);
 
   finalArgs = l.filterAttrs keepArg config;
