@@ -52,7 +52,7 @@ in rec {
       '';
     };
     outputHash = lib.mkOption {
-      description = ''
+      description = lib.mdDoc ''
         A string containing the hash in either hexadecimal or
         base-32 notation.
         Setting this option causes Nix to create a "fixed output
