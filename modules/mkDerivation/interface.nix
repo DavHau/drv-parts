@@ -39,7 +39,6 @@
   forwardedOptions = {
     # from derivation
     builder = optPackage;
-    __contentAddressed = optNullOrBool;
 
     # make-derivation args - defaultEmptyList
     depsBuildBuild = optList;

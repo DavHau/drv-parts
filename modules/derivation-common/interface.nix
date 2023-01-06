@@ -24,6 +24,7 @@
     # basic arguments
     args = optListOfStr;
     outputs = optListOfStr;
+    __contentAddressed = optNullOrBool;
     __structuredAttrs = lib.mkOption {
       type = t.nullOr t.bool;
       default = null;

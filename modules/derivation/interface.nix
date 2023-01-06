@@ -20,9 +20,5 @@ in rec {
     system = lib.mkOption {
       type = t.str;
     };
-    __contentAddressed = lib.mkOption {
-      type = t.bool;
-      default = false;
-    };
   };
 }
