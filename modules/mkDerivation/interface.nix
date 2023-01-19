@@ -123,6 +123,7 @@
     distPhase = optNullOrStr;
     preDist = optNullOrStr;
     postDist = optNullOrStr;
+    shellHook = optNullOrStr;
 
     # setup.sh flags
     dontUnpack = optNullOrBool;
