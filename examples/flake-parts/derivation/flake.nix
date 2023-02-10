@@ -15,14 +15,14 @@
       systems = ["x86_64-linux"];
 
       # enable the drv-parts plugin for flake-parts
-      imports = [drv-parts.modules.drv-parts];
+      imports = [drv-parts.flakeModule];
 
       perSystem = {config, pkgs, system, ...}: {
         checks = config.packages;
         drvs.test = {
 
           # select mkDerivation as a backend for this package
-          imports = [drv-parts.modules.derivation];
+          imports = [drv-parts.modules.drv-parts.derivation];
 
           # set options
           name = "test";

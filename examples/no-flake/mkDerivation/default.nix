@@ -5,7 +5,7 @@
 }: let
   hello = {config, ...}: {
     # select mkDerivation as a backend for this package
-    imports = [drv-parts.modules.mkDerivation];
+    imports = [drv-parts.modules.drv-parts.mkDerivation];
 
     # set options
     pname =

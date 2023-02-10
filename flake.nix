@@ -25,7 +25,7 @@
           lib
           modules
           ;
-        flakeModule = self.modules.drv-parts;
+        flakeModule = self.modules.flake-parts.drv-parts;
       };
 
       perSystem = {system, pkgs, ...}: {

@@ -30,6 +30,8 @@ let
       procps
       xz
       systemd
+      libcap
+      libnl
       ;
     buildPackages.perl = pkgs.perl;
     buildPackages.stdenv.cc = pkgs.buildPackages.stdenv.cc;

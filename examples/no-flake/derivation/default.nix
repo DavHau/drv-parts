@@ -5,7 +5,7 @@
 }: let
   hello = {
     # select builtins.derivation as a backend for this package
-    imports = [drv-parts.modules.derivation];
+    imports = [drv-parts.modules.drv-parts.derivation];
 
     # set options
     name = "test";
