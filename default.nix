@@ -17,17 +17,9 @@ let
     # the main module creatig the `.pkgs.[...]` option for flake-parts
     drv-parts = ./modules/drv-parts.nix;
   };
-
-  drv-backends = {
-    inherit (modules.drv-parts)
-      derivation
-      mkDerivation
-      ;
-  };
 in
   {
     inherit
-      drv-backends
       modules
       ;
     lib = import ./lib.nix {inherit lib;};

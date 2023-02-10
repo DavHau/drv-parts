@@ -12,7 +12,7 @@ in {
             t.submoduleWith {
               modules = [./derivation-common];
               specialArgs = {
-                drv-backends =  (inputs.drv-parts.modules.drv-parts);
+                inherit (inputs) drv-parts;
                 inherit (config.drv-parts) dependencySets;
               };
             }

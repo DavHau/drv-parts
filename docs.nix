@@ -12,6 +12,6 @@
     options = getOptions [module];
   };
 
-  docs = l.mapAttrs (_: getDocs) drv-parts.drv-backends;
+  docs = l.mapAttrs (_: getDocs) drv-parts.modules.drv-parts;
 in
   docs

@@ -1,9 +1,9 @@
-{config, lib, drv-backends, ...}: let
+{config, lib, drv-parts, ...}: let
   deps = config.deps;
 in {
 
   # select mkDerivation as a backend for this package
-  imports = [drv-backends.mkDerivation];
+  imports = [drv-parts.modules.drv-parts.mkDerivation];
 
   config = {
     # set options

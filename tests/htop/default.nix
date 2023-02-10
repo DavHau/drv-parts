@@ -9,7 +9,7 @@
   makePackage = modules: let
     drv = pkgs.lib.evalModules {
       specialArgs = {
-        inherit (drv-parts) drv-backends;
+        inherit drv-parts;
         dependencySets = {inherit pkgs;};
       };
       modules = modules;

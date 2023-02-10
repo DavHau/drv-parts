@@ -21,7 +21,6 @@
 
       flake = {
         inherit (defaultNix)
-          drv-backends
           lib
           modules
           ;
