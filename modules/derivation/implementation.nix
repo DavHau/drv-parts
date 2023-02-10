@@ -10,5 +10,6 @@ in {
   imports = [
     ../derivation-common/implementation.nix
   ];
-  config.final.derivation = derivation config.final.derivation-args;
+  config.final.derivation = lib.mkDefault
+    (derivation config.final.derivation-args);
 }
