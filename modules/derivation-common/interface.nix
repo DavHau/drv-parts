@@ -98,9 +98,13 @@
     final.derivation-args = l.mkOption {
       type = t.attrs;
     };
+    final.derivation-func = l.mkOption {
+      type = t.functionTo t.attrs;
+    };
     # this will be the resulting derivation
     final.derivation = lib.mkOption {
       type = t.package;
+      readOnly = true;
     };
 
     /*

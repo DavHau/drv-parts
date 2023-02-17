@@ -44,7 +44,10 @@ defaultNix: let
 
 in {config, options, ...}: {
 
-  imports = [../modules/mkDerivation/interface.nix];
+  imports = [
+    ../modules/derivation-common
+    ../modules/mkDerivation/interface.nix
+  ];
 
   options.flags = flagOptions;
   options.deps = l.mapAttrs mkDepOpt depArgs;
@@ -123,6 +126,8 @@ in {config, options, ...}: {
 
   {
     deps = deps;
-    final.derivation = finalDerivation;
+
+    # we ignore the args as the derivation is computed elsewhere
+    final.derivation-func = args: finalDerivation;
   };
 }

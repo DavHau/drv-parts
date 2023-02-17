@@ -46,5 +46,11 @@
     ;
 
 in {
+
+  # the final derivation args
   config.final.derivation-args = args;
+
+  # the final derivation
+  config.final.derivation =
+    config.final.derivation-func config.final.derivation-args;
 }
