@@ -23,7 +23,10 @@
   forwardedOptions = {
     # basic arguments
     args = optListOfStr;
-    outputs = optListOfStr;
+    outputs = l.mkOption {
+      type = t.nullOr (t.listOf t.str);
+      default = ["out"];
+    };
     __contentAddressed = optNullOrBool;
     __structuredAttrs = lib.mkOption {
       type = t.nullOr t.bool;
@@ -98,13 +101,29 @@
     final.derivation-args = l.mkOption {
       type = t.attrs;
     };
+
     final.derivation-func = l.mkOption {
       type = t.functionTo t.attrs;
     };
-    # this will be the resulting derivation
+
+    # add this extra indirection, as for some implementations the outputs are
+    #   only known after calling the final.derivation-func
+    final.outputs = l.mkOption {
+      type = t.listOf t.str;
+    };
+
+    # this will contain the resulting derivation
     final.derivation = lib.mkOption {
-      type = t.package;
-      readOnly = true;
+      # readOnly = true;
+      type = t.submoduleWith {
+        modules = [
+          ./typePackage.nix
+          ./typePackageCompat.nix
+        ];
+        specialArgs = {
+          inherit (config.final) outputs;
+        };
+      };
     };
 
     /*

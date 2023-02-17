@@ -128,6 +128,7 @@ in {config, options, ...}: {
     deps = deps;
 
     # we ignore the args as the derivation is computed elsewhere
+    final.outputs = finalDerivation.outputs;
     final.derivation-func = args: finalDerivation;
   };
 }
