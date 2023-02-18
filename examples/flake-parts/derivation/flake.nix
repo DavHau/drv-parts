@@ -22,7 +22,7 @@
         drvs.test = {
 
           # select mkDerivation as a backend for this package
-          imports = [drv-parts.modules.drv-parts.derivation];
+          imports = [drv-parts.modules.drv-parts.builtins-derivation];
 
           # set options
           name = "test";

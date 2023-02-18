@@ -6,7 +6,7 @@ let
   modules.drv-parts = {
     # import one of these to pick the backend for your derivation
     # TODO: add more backends like for ex.: buildPythonPackage, etc.
-    derivation = ./modules/derivation;
+    builtins-derivation = ./modules/builtins-derivation;
     mkDerivation = ./modules/mkDerivation;
 
     # the base derivation type used by the drv-parts module
