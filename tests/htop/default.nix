@@ -15,7 +15,7 @@
       modules = modules;
     };
   in
-    drv.config.final.derivation;
+    drv.config.final.package;
 
   my-htop = makePackage [
     ../../examples/flake-parts/htop/htop.nix

@@ -4,7 +4,7 @@
 
   opts = {
     # this will contain the resulting derivation
-    final.derivation = let
+    final.package = let
       optsPackage = import ./optsPackage.nix {
         inherit lib;
         inherit (config) outputs;
@@ -16,7 +16,7 @@
 
   };
 in {
-  options.final.derivation = l.mkOption {
+  options.final.package = l.mkOption {
     type = t.submodule {
       freeformType = t.lazyAttrsOf t.anything;
       options = opts;

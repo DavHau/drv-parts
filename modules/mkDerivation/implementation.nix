@@ -11,8 +11,8 @@
     then "${config.pname}-${config.version}"
     else if config.name != null
     then config.name
-    else if config.final.derivation-func-result ? name
-    then config.final.derivation-func-result.name
+    else if config.final.package-func-result ? name
+    then config.final.package-func-result.name
     else throw "Cannot determine package name";
 
   derivation =
@@ -33,8 +33,8 @@ in {
     ../derivation-common/implementation.nix
     ../pkg-func
   ];
-  config.final.derivation-func = lib.mkDefault config.stdenv.mkDerivation;
+  config.final.package-func = lib.mkDefault config.stdenv.mkDerivation;
 
   # add mkDerivation specific derivation attributes
-  config.final.derivation = derivation;
+  config.final.package = derivation;
 }

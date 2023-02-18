@@ -7,23 +7,23 @@
 in {
   options = {
 
-    final.derivation-args = l.mkOption {
+    final.package-args = l.mkOption {
       type = t.raw;
-      description = "The arguments which will be passed to `final.derivation-func`";
+      description = "The arguments which will be passed to `final.package-func`";
     };
 
-    final.derivation-func = l.mkOption {
+    final.package-func = l.mkOption {
       type = t.raw;
-      description = "Will be called with `final.derivation-args` in order to derive `final.derivation-func-result`";
+      description = "Will be called with `final.package-args` in order to derive `final.package-func-result`";
     };
 
-    final.derivation-func-result = l.mkOption {
+    final.package-func-result = l.mkOption {
       type = t.raw;
       description = ''
         The result of calling the final derivation function.
-        This is not necessarily the same as `final.derivation`. The function output might not be compatible to the interface of `final.derivation` and additional logic might be needed to create `final.derivation`.
+        This is not necessarily the same as `final.package`. The function output might not be compatible to the interface of `final.package` and additional logic might be needed to create `final.package`.
       '';
-      default = config.final.derivation-func config.final.derivation-args;
+      default = config.final.package-func config.final.package-args;
       readOnly = true;
     };
   };

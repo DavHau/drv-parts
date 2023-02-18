@@ -140,6 +140,6 @@ in {config, options, extendModules, ...}: {
     deps = deps;
 
     # we ignore the args as the derivation is computed elsewhere
-    final.derivation = l.mkForce result;
+    final.package = l.mkForce result;
   };
 }

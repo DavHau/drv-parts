@@ -10,7 +10,7 @@ let
       specialArgs = {inherit dependencySets;};
     };
   in
-    drv.config.final.derivation;
+    drv.config.final.package;
 
   makeModule = import ./lib/makeModule.nix {
     inherit lib drvPartsLib;

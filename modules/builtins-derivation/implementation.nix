@@ -12,7 +12,7 @@ in {
     ../pkg-func
   ];
 
-  config.final.derivation-func = lib.mkDefault builtins.derivation;
+  config.final.package-func = lib.mkDefault builtins.derivation;
 
-  config.final.derivation.name = config.name;
+  config.final.package.name = config.name;
 }
