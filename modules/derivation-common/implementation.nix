@@ -40,8 +40,9 @@
     Specify the top-level option instead, or rename the environment variable.
   '';
 
-  # outputs needed to assemble the package
-  outputs = config.final.outputs;
+  # outputs needed to assemble a package as proposed in
+  #   https://github.com/NixOS/nix/issues/6507
+  outputs = l.unique config.outputs;
 
   # all args that are passed directly to the final derivation function
   args = finalArgs // envChecked // {inherit outputs;};
@@ -81,13 +82,14 @@
 
 in {
 
+  # add an option for each output, eg. out, bin, lib, etc...
+  options.final.derivation = l.genAttrs config.outputs (output: l.mkOption {
+    type = t.path;
+  });
+
   # the final derivation args
   config.final.derivation-args = args;
 
   # the final derivation
   config.final.derivation = derivation;
-
-  # outputs needed to assemble a package as proposed in
-  #   https://github.com/NixOS/nix/issues/6507
-  config.final.outputs = l.mkDefault (l.unique config.outputs);
 }

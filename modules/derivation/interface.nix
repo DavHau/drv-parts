@@ -4,6 +4,7 @@
 in rec {
   imports = [
     ../derivation-common/interface.nix
+    ../package/interface.nix
   ];
 
   # signal that all options should be passed to the final derivation function

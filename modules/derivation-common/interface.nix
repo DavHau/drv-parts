@@ -98,46 +98,6 @@
       default = {};
     };
 
-    final.derivation-args = l.mkOption {
-      type = t.attrs;
-      description = "The arguments which will be passed to `final.derivation-func`";
-    };
-
-    final.derivation-func = l.mkOption {
-      type = t.functionTo t.attrs;
-      description = "Will be called with `final.derivation-args` in order to derive `final.derivation-func-result`";
-    };
-
-    final.derivation-func-result = l.mkOption {
-      type = t.raw;
-      description = ''
-        The result of calling the final derivation function.
-        This is not necessarily the same as `final.derivation`. The function output might not be compatible to the interface of `final.derivation` and additional logic might be needed to create `final.derivation`.
-      '';
-      default = config.final.derivation-func config.final.derivation-args;
-      readOnly = true;
-    };
-
-    # add this extra indirection, as for some implementations the outputs are
-    #   only known after calling the final.derivation-func
-    final.outputs = l.mkOption {
-      type = t.listOf t.str;
-    };
-
-    # this will contain the resulting derivation
-    final.derivation = let
-      optsOutputs = l.genAttrs config.final.outputs (output: l.mkOption {
-        type = t.path;
-      });
-      optsPackage = import ./optsPackage.nix {
-        inherit lib;
-        inherit (config.final) outputs;
-      };
-      optsPackageCompat = import ./optsPackageCompat.nix {inherit lib;};
-      optsPackageDrvParts = import ./optsPackageDrvParts.nix {inherit lib;};
-    in
-      optsOutputs // optsPackage // optsPackageCompat // optsPackageDrvParts;
-
     /*
       This allows defining drvs in an encapsulated manner, while maintaining
         the capability to depend on external attributes

@@ -10,7 +10,7 @@ in {
         drvs = l.mkOption {
           type = t.lazyAttrsOf (
             t.submoduleWith {
-              modules = [./derivation-common];
+              modules = [./package];
               specialArgs = {
                 inherit (inputs) drv-parts;
                 inherit (config.drv-parts) dependencySets;

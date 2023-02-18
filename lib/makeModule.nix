@@ -42,10 +42,9 @@ defaultNix: let
     type = t.raw;
   };
 
-in {config, options, ...}: {
+in {config, options, extendModules, ...}: {
 
   imports = [
-    ../modules/derivation-common
     ../modules/mkDerivation/interface.nix
   ];
 
@@ -110,6 +109,19 @@ in {config, options, ...}: {
 
     finalDerivation = drvPartsLib.derivationFromModules {} [finalDrvModule];
 
+    outputDrvs = l.genAttrs finalDerivation.outputs
+      (output: finalDerivation.${output});
+
+    result =
+      # out, lib, bin, etc...
+      outputDrvs
+      # outputs, drvPath
+      // {
+        inherit (finalDerivation) name version drvPath outPath outputs;
+        inherit config extendModules;
+        type = "derivation";
+      };
+
     /*
       Populate deps with some defaults.
       `lib` should be taken from the current module.
@@ -128,8 +140,6 @@ in {config, options, ...}: {
     deps = deps;
 
     # we ignore the args as the derivation is computed elsewhere
-    final.outputs = finalDerivation.outputs;
-    final.derivation-func = args: finalDerivation;
-    final.derivation.name = finalDerivation.name;
+    final.derivation = l.mkForce result;
   };
 }
