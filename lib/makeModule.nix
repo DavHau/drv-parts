@@ -1,9 +1,12 @@
 {lib, drvPartsLib}:
-defaultNix: let
+packageFuncOrPath: let
   l = lib // builtins;
   t = l.types;
 
-  defaultNixImported = import defaultNix;
+  packageFunc =
+    if l.isFunction packageFuncOrPath
+    then packageFuncOrPath
+    else import packageFuncOrPath;
 
   isMatch = regex: str: (l.match regex str) != null;
 
@@ -21,7 +24,7 @@ defaultNix: let
   makeFlagOptions = l.mapAttrs mkBoolOption;
 
   # the arguments of the default.nix
-  args = (l.functionArgs defaultNixImported);
+  args = (l.functionArgs packageFunc);
 
   # all arguments of the defaut.nix which are flags
   flagArgs = l.filterAttrs (argName: _: isBoolFlag argName) args;
@@ -62,7 +65,7 @@ in {config, options, extendModules, ...}: {
     packageFunctionArgs = flagArgs' // depArgs';
 
     # call the package func passing only its required arguments (flags + deps);
-    derivationOrig = defaultNixImported packageFunctionArgs;
+    derivationOrig = packageFunc packageFunctionArgs;
 
     # the arguments passed to mkDerivation by the default.nix package func
     origMkDrvArgs = getMkDrvArgs derivationOrig;
