@@ -15,7 +15,7 @@
     then config.final.derivation-func-result.name
     else throw "Cannot determine package name";
 
-  package =
+  derivation =
     {
       inherit name;
     }
@@ -35,5 +35,5 @@ in {
   config.final.derivation-func = lib.mkDefault config.stdenv.mkDerivation;
 
   # add mkDerivation specific derivation attributes
-  config.final.derivation = package;
+  config.final.derivation = derivation;
 }

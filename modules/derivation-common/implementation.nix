@@ -67,7 +67,7 @@
     then returnVal
     else throw nonSingleDrvError;
 
-  package.config =
+  derivation =
     # out, lib, bin, etc...
     outputDrvs
     # outputs, drvPath
@@ -85,7 +85,7 @@ in {
   config.final.derivation-args = args;
 
   # the final derivation
-  config.final.derivation = package;
+  config.final.derivation = derivation;
 
   # outputs needed to assemble a package as proposed in
   #   https://github.com/NixOS/nix/issues/6507

@@ -125,19 +125,18 @@
     };
 
     # this will contain the resulting derivation
-    final.derivation = lib.mkOption {
-      # readOnly = true;
-      type = t.submoduleWith {
-        modules = [
-          ./typePackage.nix
-          ./typePackageCompat.nix
-          ./typePackageDrvParts.nix
-        ];
-        specialArgs = {
-          inherit (config.final) outputs;
-        };
+    final.derivation = let
+      optsOutputs = l.genAttrs config.final.outputs (output: l.mkOption {
+        type = t.path;
+      });
+      optsPackage = import ./optsPackage.nix {
+        inherit lib;
+        inherit (config.final) outputs;
       };
-    };
+      optsPackageCompat = import ./optsPackageCompat.nix {inherit lib;};
+      optsPackageDrvParts = import ./optsPackageDrvParts.nix {inherit lib;};
+    in
+      optsOutputs // optsPackage // optsPackageCompat // optsPackageDrvParts;
 
     /*
       This allows defining drvs in an encapsulated manner, while maintaining

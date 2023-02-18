@@ -2,25 +2,18 @@
 #   compatible to the current implementation of nix.
 # This module adds fields that are needed to ensure compatibility.
 
-{config, lib, outputs, ...}: let
+{lib, ...}: let
   l = lib // builtins;
   t = l.types;
 
 in {
-
-  options = {
-    drvPath = l.mkOption {
-      type = t.path;
-    };
-    outPath = l.mkOption {
-      type = t.path;
-    };
-    type = l.mkOption {
-      type = t.str;
-    };
+  drvPath = l.mkOption {
+    type = t.path;
   };
-
-  config = {
-    type = "derivation";
+  outPath = l.mkOption {
+    type = t.path;
+  };
+  type = l.mkOption {
+    type = t.str;
   };
 }
