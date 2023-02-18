@@ -1,8 +1,12 @@
+# Module to provide an interface for integrating derivation builder functions
+#   like for example, mkDerivation, buildPythonPackage, etc...
+
 {config, lib, ...}: let
   l = lib // builtins;
   t = l.types;
 in {
   options = {
+
     final.derivation-args = l.mkOption {
       type = t.raw;
       description = "The arguments which will be passed to `final.derivation-func`";
