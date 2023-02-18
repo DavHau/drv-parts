@@ -1,13 +1,21 @@
 {
-  lib ? import <nixpkgs/lib>
+  lib ? import <nixpkgs/lib>,
+  drv-parts ? import ./. {inherit lib;},
 }:
 let
   l = lib // builtins;
 
   derivationFromModules = dependencySets: modules: let
     drv = lib.evalModules {
-      modules = if l.isList modules then modules else [modules];
-      specialArgs = {inherit dependencySets;};
+      modules =
+        (l.toList modules)
+        ++ [
+          ./modules/drv-parts/package
+          ./modules/drv-parts/flags
+        ];
+      specialArgs = {
+        inherit dependencySets drv-parts;
+      };
     };
   in
     drv.config.final.package;

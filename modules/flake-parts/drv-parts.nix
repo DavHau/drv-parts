@@ -10,13 +10,17 @@ in {
         drvs = l.mkOption {
           type = t.lazyAttrsOf (
             t.submoduleWith {
-              modules = [./package];
+              modules = [
+                ../drv-parts/package
+                ../drv-parts/flags
+              ];
               specialArgs = {
                 inherit (inputs) drv-parts;
                 inherit (config.drv-parts) dependencySets;
               };
             }
           );
+          default = {};
           description = "An attribute set of derivations";
           example = lib.literalExpression ''
             hello-simple = {

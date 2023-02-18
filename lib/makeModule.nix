@@ -45,7 +45,7 @@ defaultNix: let
 in {config, options, extendModules, ...}: {
 
   imports = [
-    ../modules/mkDerivation/interface.nix
+    ../modules/drv-parts/mkDerivation/interface.nix
   ];
 
   options.flags = flagOptions;
@@ -96,7 +96,7 @@ in {config, options, extendModules, ...}: {
     # extracted from the default.nix package func
     finalDrvModule = {
       imports = [
-        ../modules/mkDerivation
+        ../modules/drv-parts/mkDerivation
         origMkDrvArgsModule
         origMkDrvEnvModule
         userArgsModule

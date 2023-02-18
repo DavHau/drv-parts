@@ -6,25 +6,18 @@
 
   l = pkgs.lib // builtins;
 
-  makePackage = modules: let
-    drv = pkgs.lib.evalModules {
-      specialArgs = {
-        inherit drv-parts;
-        dependencySets = {inherit pkgs;};
-      };
-      modules = modules;
-    };
-  in
-    drv.config.final.package;
-
-  my-htop = makePackage [
-    ../../examples/flake-parts/htop/htop.nix
+  my-htop = drv-parts.lib.derivationFromModules
     {
-      stdenv = pkgs.stdenv;
-      src = l.mkForce pkgs.htop.src;
-      version =  l.mkForce pkgs.htop.version;
+      inherit pkgs;
     }
-  ];
+    [
+      ../../examples/flake-parts/htop/htop.nix
+      {
+        stdenv = pkgs.stdenv;
+        src = l.mkForce pkgs.htop.src;
+        version =  l.mkForce pkgs.htop.version;
+      }
+    ];
 
   nixpkgs-htop = pkgs.htop;
 in

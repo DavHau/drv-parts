@@ -17,7 +17,7 @@
       systems = ["x86_64-linux"];
 
       # enable the drv-parts plugin for flake-parts
-      imports = [drv-parts.flakeModule];
+      imports = [drv-parts.modules.flake-parts.drv-parts];
 
       perSystem = {config, pkgs, lib, ...}: {
 

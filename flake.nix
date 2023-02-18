@@ -1,55 +1,26 @@
 {
-  description = ''
-    construct derivations using the nixos-module system
-  '';
+  description = "";
 
   inputs = {
-    flake-parts.url = "github:hercules-ci/flake-parts";
     nixpkgs.url = "nixpkgs/nixos-unstable";
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
   };
 
-  outputs = {
-    self,
-    flake-parts,
-    nixpkgs,
-    ...
-  } @ inputs: let
-    defaultNix = import ./default.nix {inherit (nixpkgs) lib;};
-  in
-    flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = ["x86_64-linux"];
+  outputs = inputs@{ flake-parts, ... }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
 
-      flake = {
-        inherit (defaultNix)
-          lib
-          modules
-          ;
-        flakeModule = self.modules.flake-parts.drv-parts;
-      };
+      systems = [
+        # "aarch64-darwin"
+        # "aarch64-linux"
+        # "x86_64-darwin"
+        "x86_64-linux"
+      ];
 
-      perSystem = {system, pkgs, ...}: {
-        packages.tests-examples = pkgs.writeShellScriptBin "tests-examples" ''
-          set -eu -o pipefail
-          for example in $(find ./examples/flake-parts/ -type f "$@"); do
-            echo "building example $example"
-            nix flake check "$example" -L \
-              --show-trace \
-              --no-write-lock-file \
-              --override-input drv-parts ${self}
-          done
-          for example in $(find ./examples/no-flake/ -type f "$@"); do
-            echo "building example $example"
-            nix build -f "$example" -L \
-              --show-trace \
-              --no-link
-          done
-          for example in $(find ./tests/ -type f "$@"); do
-            echo "building test $example"
-            nix build -f "$example" -L \
-              --show-trace \
-              --no-link
-          done
-        '';
-      };
+      imports = [
+        ./modules/flake-parts/all-modules.nix
+      ];
     };
 }
