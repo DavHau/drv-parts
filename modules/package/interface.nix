@@ -1,0 +1,25 @@
+{config, lib, dependencySets, ...}: let
+  l = lib // builtins;
+  t = l.types;
+
+  opts = {
+    # this will contain the resulting derivation
+    final.derivation = let
+      optsPackage = import ./optsPackage.nix {
+        inherit lib;
+        inherit (config) outputs;
+      };
+      optsPackageCompat = import ./optsPackageCompat.nix {inherit lib;};
+      optsPackageDrvParts = import ./optsPackageDrvParts.nix {inherit lib;};
+    in
+      optsPackage // optsPackageCompat // optsPackageDrvParts;
+
+  };
+in {
+  options.final.derivation = l.mkOption {
+    type = t.submodule {
+      freeformType = t.lazyAttrsOf t.anything;
+      options = opts;
+    };
+  };
+}
