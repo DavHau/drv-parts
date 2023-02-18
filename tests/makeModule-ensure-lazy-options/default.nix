@@ -13,7 +13,7 @@ l = nixpkgs.lib // builtins;
   helloEvaled = l.evalModules {
     modules = [
       helloDefaultNix
-      {stdenv = nixpkgs.stdenv;}
+      {deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};}
     ];
     specialArgs.dependencySets = {};
   };

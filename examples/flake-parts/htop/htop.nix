@@ -1,5 +1,6 @@
 {config, lib, drv-parts, ...}: let
   deps = config.deps;
+  stdenv = deps.stdenv;
 in {
 
   # select mkDerivation as a backend for this package
@@ -16,11 +17,11 @@ in {
     };
 
     # set defaults for flags
-    flags.sensorsSupport = lib.mkDefault config.stdenv.isLinux;
-    flags.systemdSupport = lib.mkDefault config.stdenv.isLinux;
+    flags.sensorsSupport = lib.mkDefault stdenv.isLinux;
+    flags.systemdSupport = lib.mkDefault stdenv.isLinux;
 
-    deps = {pkgs, ...}: {
-      inherit (pkgs)
+    deps = {nixpkgs, ...}: {
+      inherit (nixpkgs)
         autoreconfHook
         fetchFromGitHub
         IOKit
@@ -40,7 +41,7 @@ in {
     nativeBuildInputs = [ deps.autoreconfHook ];
 
     buildInputs = [ deps.ncurses ]
-      ++ lib.optional config.stdenv.isDarwin deps.IOKit
+      ++ lib.optional stdenv.isDarwin deps.IOKit
       ++ lib.optional config.flags.sensorsSupport deps.lm_sensors
       ++ lib.optional config.flags.systemdSupport deps.systemd
     ;

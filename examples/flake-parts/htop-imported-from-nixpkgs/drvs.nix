@@ -43,7 +43,6 @@ let
 
   commonModule = {
     deps = allDeps;
-    stdenv = pkgs.stdenv;
   };
 
   modulesFor = defaultNixPath: [

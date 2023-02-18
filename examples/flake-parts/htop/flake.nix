@@ -25,14 +25,14 @@
           # htop defined via submodule
           htop.imports = [./htop.nix];
 
-          htop.stdenv = pkgs.stdenv;
+          htop.deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};
 
           # overriding htop
           htop-mod = {
             imports = [./htop.nix];
             pname = lib.mkForce "htop-mod";
             flags.sensorsSupport = false;
-            stdenv = pkgs.stdenv;
+            deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};
           };
         };
 

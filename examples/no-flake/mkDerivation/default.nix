@@ -1,6 +1,6 @@
 {
-  pkgs ? import <nixpkgs> {},
-  drv-parts ? import ../../../default.nix {inherit (pkgs) lib;},
+  nixpkgs ? import <nixpkgs> {},
+  drv-parts ? import ../../../default.nix {inherit (nixpkgs) lib;},
   ...
 }: let
   hello = {config, ...}: {
@@ -12,14 +12,14 @@
       if config.flags.enableFoo
       then "hello-with-foo"
       else "hello";
-    version = pkgs.hello.version;
-    src = pkgs.hello.src;
+    version = nixpkgs.hello.version;
+    src = nixpkgs.hello.src;
     doCheck = true;
-    stdenv = pkgs.stdenv;
+    deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};
 
     flagsOffered = {
       enableFoo = "build with foo";
     };
   };
 in
-  drv-parts.lib.derivationFromModules {} hello
+  drv-parts.lib.derivationFromModules {inherit nixpkgs;} hello

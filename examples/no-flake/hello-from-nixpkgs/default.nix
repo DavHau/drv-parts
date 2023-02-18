@@ -1,19 +1,19 @@
 {
-  pkgs ? import <nixpkgs> {},
-  drv-parts ? import ../../../default.nix {inherit (pkgs) lib;},
+  nixpkgs ? import <nixpkgs> {},
+  drv-parts ? import ../../../default.nix {inherit (nixpkgs) lib;},
   ...
 }: let
 
   # use makeModule to make a module out of applications/misc/hello/default.nix
   helloDefaultNix = drv-parts.lib.makeModule
-    (pkgs.path + /pkgs/applications/misc/hello/default.nix);
+    (nixpkgs.path + /pkgs/applications/misc/hello/default.nix);
 
   # define another module to set `deps`
   helloDeps = {
 
-    deps = {
+    deps = {nixpkgs, ...}: {
       inherit hello; # the default.nix of hello wants hello as an input.
-      inherit (pkgs)
+      inherit (nixpkgs)
         fetchurl
         stdenv
         callPackage
@@ -21,11 +21,9 @@
         testers
         ;
     };
-
-    stdenv = pkgs.stdenv;
   };
 
-  hello = drv-parts.lib.derivationFromModules {} [
+  hello = drv-parts.lib.derivationFromModules {inherit nixpkgs;} [
     helloDefaultNix
     helloDeps
   ];

@@ -33,7 +33,7 @@ in {
     ../derivation-common/implementation.nix
     ../pkg-func
   ];
-  config.final.package-func = lib.mkDefault config.stdenv.mkDerivation;
+  config.final.package-func = lib.mkDefault config.deps.stdenv.mkDerivation;
 
   # add mkDerivation specific derivation attributes
   config.final.package = derivation;

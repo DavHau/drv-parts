@@ -13,8 +13,6 @@
   myModule = {
 
     deps = {nixpkgs, ...}: {config = nixpkgs // nixpkgs.python3.pkgs;};
-
-    stdenv = nixpkgs.stdenv;
   };
 
   pkg = l.evalModules {

@@ -73,8 +73,9 @@ in {
         drv-parts.dependencySets = l.mkOption {
           type = t.lazyAttrsOf t.raw;
           default = {
-            inherit pkgs inputs';
+            inherit inputs';
             inherit (self') packages;
+            nixpkgs = pkgs;
           };
           description = ''
             Define the package sets which can be used to pick dependencies from.

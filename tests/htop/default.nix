@@ -1,25 +1,21 @@
 {
-  pkgs ? import <nixpkgs> {},
-  drv-parts ? import ../../default.nix {inherit (pkgs) lib;},
+  nixpkgs ? import <nixpkgs> {},
+  drv-parts ? import ../../default.nix {inherit (nixpkgs) lib;},
   ...
 }: let
 
-  l = pkgs.lib // builtins;
+  l = nixpkgs.lib // builtins;
 
-  my-htop = drv-parts.lib.derivationFromModules
+  my-htop = drv-parts.lib.derivationFromModules {inherit nixpkgs;} [
+    ../../examples/flake-parts/htop/htop.nix
     {
-      inherit pkgs;
+      deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};
+      src = l.mkForce nixpkgs.htop.src;
+      version =  l.mkForce nixpkgs.htop.version;
     }
-    [
-      ../../examples/flake-parts/htop/htop.nix
-      {
-        stdenv = pkgs.stdenv;
-        src = l.mkForce pkgs.htop.src;
-        version =  l.mkForce pkgs.htop.version;
-      }
-    ];
+  ];
 
-  nixpkgs-htop = pkgs.htop;
+  nixpkgs-htop = nixpkgs.htop;
 in
   assert my-htop.drvPath == nixpkgs-htop.drvPath;
   {

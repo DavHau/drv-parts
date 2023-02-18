@@ -30,12 +30,6 @@
     default = null;
   };
 
-  drvPartsOptions = {
-    stdenv = l.mkOption {
-      type = t.attrs;
-    };
-  };
-
   forwardedOptions = {
     # from derivation
     builder = optPackage;
@@ -203,5 +197,5 @@ in {
   # signal that all options should be passed to the final derivation function
   config.argsForward = l.mapAttrs (_: _: true) forwardedOptions;
 
-  options = forwardedOptions // drvPartsOptions;
+  options = forwardedOptions;
 }

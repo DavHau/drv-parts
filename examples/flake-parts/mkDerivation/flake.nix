@@ -24,7 +24,9 @@
           # select mkDerivation as a backend for this package
           imports = [drv-parts.modules.drv-parts.mkDerivation];
 
-          stdenv = pkgs.stdenv;
+          deps = {nixpkgs, ...}: {
+            inherit (nixpkgs) stdenv;
+          };
 
           # set options
           name = "hello";

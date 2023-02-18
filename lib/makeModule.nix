@@ -107,7 +107,7 @@ in {config, options, extendModules, ...}: {
       ];
       _file = "finalDrvModule";
       options = flagOptions;
-      config.stdenv = config.stdenv;
+      config.deps.stdenv = config.deps.stdenv;
     };
 
     finalDerivation = drvPartsLib.derivationFromModules {} [finalDrvModule];
@@ -128,11 +128,11 @@ in {config, options, extendModules, ...}: {
     /*
       Populate deps with some defaults.
       `lib` should be taken from the current module.
-      `stdenv` should be taken from `config.stdenv`.
+      `stdenv` should be taken from `config.deps.stdenv`.
     */
     deps' = {
       inherit lib;
-      inherit (config) stdenv;
+      inherit (config.deps) stdenv;
     };
     deps'' = l.intersectAttrs depArgs deps';
     deps = l.mapAttrs (_: dep: l.mkDefault dep) deps'';
