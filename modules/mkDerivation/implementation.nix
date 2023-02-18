@@ -31,7 +31,7 @@
 in {
   imports = [
     ../derivation-common/implementation.nix
-    ../drv-func
+    ../pkg-func
   ];
   config.final.derivation-func = lib.mkDefault config.stdenv.mkDerivation;
 
