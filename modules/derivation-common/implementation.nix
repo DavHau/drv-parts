@@ -2,6 +2,7 @@
   config,
   lib,
   options,
+  extendModules,
   ...
 }: let
   l = lib // builtins;
@@ -45,45 +46,36 @@
   # all args that are passed directly to the final derivation function
   args = finalArgs // envChecked // {inherit outputs;};
 
-  drvFuncResult = config.final.derivation-func config.final.derivation-args;
+  outputDrvs = l.genAttrs outputs
+    (output: config.final.derivation-func-result.${output});
 
-  outputDrvs = l.genAttrs outputs (output: drvFuncResult.${output});
-  outputPaths = l.genAttrs outputs (output: "${drvFuncResult.${output}}");
-  outputDrvsContexts = l.mapAttrsToList (output: path: l.getContext path) outputPaths;
+  outputPaths = l.mapAttrs (_: drv: "${drv}") outputDrvs;
 
-  packageIdentifier =
-    if drvFuncResult ? name
-    then drvFuncResult.name
-    else if config.pname != null
-    then "${config.pname}-${config.version}"
-    else config.name;
+  outputDrvsContexts =
+    l.mapAttrsToList (output: path: l.getContext path) outputPaths;
 
   isSingleDrvPackage = (l.length (l.unique outputDrvsContexts)) == 1;
 
   nonSingleDrvError = ''
-    The package ${packageIdentifier} consists of multiple outputs that are built by distinct derivations. It can't be understood as a single derivation.
-    This problem is cause by referencing the package directly. Instead reference one of its output attributes:
+    The package ${config.final.derivation.name} consists of multiple outputs that are built by distinct derivations. It can't be understood as a single derivation.
+    This problem is causes by referencing the package directly. Instead, reference one of its output attributes:
       - .${l.concatStringsSep "\n  - ." outputs}
   '';
 
-  drvPath =
+  throwIfMultiDrvOr = returnVal:
     if isSingleDrvPackage
-    then outputDrvs.out.drvPath
+    then returnVal
     else throw nonSingleDrvError;
 
-  outPath =
-    if isSingleDrvPackage
-    then outputDrvs.out.outPath
-    else throw nonSingleDrvError;
-
-  package =
+  package.config =
     # out, lib, bin, etc...
     outputDrvs
-    # name, version, outputs, drvPath
+    # outputs, drvPath
     // {
-      inherit drvPath outputs outPath;
-      inherit (config) version;
-      name = packageIdentifier;
+      inherit outputs;
+      inherit config extendModules;
+      drvPath = throwIfMultiDrvOr outputDrvs.out.drvPath;
+      outPath = throwIfMultiDrvOr outputDrvs.out.outPath;
       type = "derivation";
     };
 
