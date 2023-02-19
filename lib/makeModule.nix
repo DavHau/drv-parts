@@ -1,12 +1,26 @@
 {lib}:
-packageFuncOrPath: let
+{
+  # packageFunc can be:
+  #   - a package function
+  #       (eg: {stdenv, depXY, enableFoo}: stdenv.mkDerivation {...})
+  #   - or a path to a package function file (eg. default.nix file)
+  #   - or something that offers an override function
+  packageFunc,
+
+  # pass extra modules to include by default
+  modules ? [],
+  ...
+} @ arguments: let
+
   l = lib // builtins;
   t = l.types;
 
   packageFunc =
-    if l.isFunction packageFuncOrPath
-    then packageFuncOrPath
-    else import packageFuncOrPath;
+    if l.isDerivation arguments.packageFunc
+    then ({...}: arguments.packageFunc)
+    else if l.isFunction arguments.packageFunc
+    then arguments.packageFunc
+    else import arguments.packageFunc;
 
   isMatch = regex: str: (l.match regex str) != null;
 
@@ -47,9 +61,9 @@ packageFuncOrPath: let
 
 in {config, options, extendModules, ...}: {
 
-  imports = [
-    ../modules/drv-parts/mkDerivation/interface.nix
-  ];
+  imports =
+    (l.toList modules)
+    ++ [../modules/drv-parts/mkDerivation/interface.nix];
 
   options.flags = flagOptions;
   options.deps = l.mapAttrs mkDepOpt depArgs;
@@ -109,6 +123,7 @@ in {config, options, extendModules, ...}: {
         userEnvModule
       ];
       _file = "finalDrvModule";
+      options = flagOptions;
       config.deps.stdenv = config.deps.stdenv;
     };
 

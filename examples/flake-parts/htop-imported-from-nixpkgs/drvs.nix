@@ -46,7 +46,7 @@ let
   };
 
   modulesFor = defaultNixPath: [
-    (makeModule defaultNixPath)
+    (makeModule {packageFunc = defaultNixPath;})
     commonModule
   ];
 
