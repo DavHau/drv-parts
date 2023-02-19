@@ -1,4 +1,4 @@
-{lib, drvPartsLib}:
+{lib}:
 packageFuncOrPath: let
   l = lib // builtins;
   t = l.types;
@@ -53,6 +53,9 @@ in {config, options, extendModules, ...}: {
 
   options.flags = flagOptions;
   options.deps = l.mapAttrs mkDepOpt depArgs;
+  options.final.package.drvAttrs = l.mkOption {
+    type = t.lazyAttrsOf t.raw;
+  };
 
   config = let
 
@@ -106,11 +109,15 @@ in {config, options, extendModules, ...}: {
         userEnvModule
       ];
       _file = "finalDrvModule";
-      options = flagOptions;
       config.deps.stdenv = config.deps.stdenv;
     };
 
-    finalDerivation = drvPartsLib.derivationFromModules {} [finalDrvModule];
+    finalDrvEval = l.evalModules {
+      modules = [finalDrvModule];
+      specialArgs.dependencySets = {};
+    };
+
+    finalDerivation = finalDrvEval.config.final.package;
 
     outputDrvs = l.genAttrs finalDerivation.outputs
       (output: finalDerivation.${output});
@@ -122,6 +129,7 @@ in {config, options, extendModules, ...}: {
       // {
         inherit (finalDerivation) name version drvPath outPath outputs;
         inherit config extendModules;
+        drvAttrs = finalDrvEval.config.final.package-func-result.drvAttrs;
         type = "derivation";
       };
 
