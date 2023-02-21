@@ -66,7 +66,10 @@ in {config, options, extendModules, ...}: {
 
   imports =
     (l.toList modules)
-    ++ [../modules/drv-parts/mkDerivation/interface.nix];
+    ++ [
+      ../modules/drv-parts/mkDerivation/interface.nix
+      ../modules/drv-parts/core
+    ];
 
   options.flags = flagOptions;
   options.deps = l.mapAttrs mkDepOpt depArgs;
@@ -169,6 +172,6 @@ in {config, options, extendModules, ...}: {
     deps = deps;
 
     # we ignore the args as the derivation is computed elsewhere
-    final.package = l.mkForce result;
+    final.package = result;
   };
 }

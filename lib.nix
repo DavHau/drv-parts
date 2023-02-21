@@ -10,8 +10,7 @@ let
       modules =
         (l.toList modules)
         ++ [
-          ./modules/drv-parts/package
-          ./modules/drv-parts/flags
+          ./modules/drv-parts/core
         ];
       specialArgs = {
         inherit dependencySets drv-parts;

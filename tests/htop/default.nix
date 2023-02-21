@@ -23,4 +23,5 @@ in
       my-htop
       nixpkgs-htop
       ;
+    docs = my-htop.docs;
   }

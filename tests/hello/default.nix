@@ -15,4 +15,5 @@ in
       my-hello
       nixpkgs-hello
       ;
+    docs = my-hello.docs;
   }

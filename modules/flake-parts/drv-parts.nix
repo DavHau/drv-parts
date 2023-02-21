@@ -11,8 +11,7 @@ in {
           type = t.lazyAttrsOf (
             t.submoduleWith {
               modules = [
-                ../drv-parts/package
-                ../drv-parts/flags
+                ../drv-parts/core
               ];
               specialArgs = {
                 inherit (inputs) drv-parts;
