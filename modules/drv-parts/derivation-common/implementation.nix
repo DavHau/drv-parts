@@ -53,7 +53,7 @@
   outputPaths = l.mapAttrs (_: drv: "${drv}") outputDrvs;
 
   outputDrvsContexts =
-    l.mapAttrsToList (output: path: l.getContext path) outputPaths;
+    l.mapAttrsToList (output: path: l.attrNames (l.getContext path)) outputPaths;
 
   isSingleDrvPackage = (l.length (l.unique outputDrvsContexts)) == 1;
 
