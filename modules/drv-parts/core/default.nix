@@ -1,0 +1,6 @@
+{
+  imports = [
+    ../flags
+    ../package
+  ];
+}
