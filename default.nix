@@ -1,28 +1,16 @@
-{
-  lib ? import <nixpkgs/lib>,
-}:
+# This file provides backward compatibility to nix < 2.4 clients
+
+args:
 let
-  l = lib // builtins;
-  modules.drv-parts = {
-    # import one of these to pick the backend for your derivation
-    # TODO: add more backends like for ex.: buildPythonPackage, etc.
-    builtins-derivation = ./modules/drv-parts/builtins-derivation;
-    mkDerivation = ./modules/drv-parts/mkDerivation;
-
-    # the base derivation type used by the drv-parts module
-    derivation-common = ./modules/drv-parts/derivation-common;
-  };
-
-  modules.flake-parts = {
-    # the main module creatig the `.pkgs.[...]` option for flake-parts
-    drv-parts = ./modules/drv-parts/drv-parts.nix;
-  };
-
-  drv-parts = {
-    inherit
-      modules
-      ;
-    lib = import ./lib.nix {inherit drv-parts lib;};
-  };
+  flake =
+    import
+    (
+      let lock = builtins.fromJSON (builtins.readFile ./flake.lock); in
+      fetchTarball {
+        url = "https://github.com/edolstra/flake-compat/archive/${lock.nodes.flake-compat.locked.rev}.tar.gz";
+        sha256 = lock.nodes.flake-compat.locked.narHash;
+      }
+    )
+    { src = ./.; };
 in
-  drv-parts
+  flake.defaultNix
