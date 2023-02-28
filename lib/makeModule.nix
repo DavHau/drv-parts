@@ -79,6 +79,8 @@ in {config, options, extendModules, ...}: {
 
   config = let
 
+    topLevelOptions = l.filterAttrs (name: _: name != "_module") options.mkDerivation;
+
     pickFlag = flagName: _: config.flags.${flagName};
     pickDep = depName: _: config.deps.${depName};
     flagArgs' = l.mapAttrs pickFlag flagArgs;
@@ -95,7 +97,7 @@ in {config, options, extendModules, ...}: {
 
     # Returns true if a given argName is a top-level config field for drv-parts'
     #   mkDerivation.
-    isTopLevelArg = argName: _: config.argsForward ? ${argName};
+    isTopLevelArg = argName: _: topLevelOptions ? ${argName};
 
     # all mkDerivation args originating from the default.nix func
     origMkDrvArgsTopLevel = l.filterAttrs isTopLevelArg origMkDrvArgs;
@@ -104,18 +106,23 @@ in {config, options, extendModules, ...}: {
       l.filterAttrs (argName: _: ! origMkDrvArgsTopLevel ? ${argName}) origMkDrvArgs;
 
     # modules for the mkDerivation and env args originating from the default.nix
-    origMkDrvArgsModule = {config = origMkDrvArgsTopLevel;};
+    origMkDrvArgsModule = {config.mkDerivation = origMkDrvArgsTopLevel;};
     origMkDrvEnvModule = {config.env = origMkDrvArgsEnv;};
 
-    # all top-level args for drv-part's mkDerivation to map over.
-    allUserArgs = config.argsForward // flagArgs;
-
+    # Restore priorities of user specified config.
+    # This is necessary becaue `config.mkDerivation` is forwarded into a second
+    #   module evaluation.
+    # To regain proper merging, priorities have to be restored first.
     mkUserConfigOverride = argName: _:
-      l.mkOverride options.${argName}.highestPrio config.${argName};
+      l.mkOverride options.mkDerivation.${argName}.highestPrio
+      config.mkDerivation.${argName};
+
     # a copy of all user defined args for drv-part's mkDerivation including the
     # priority (this is required to merge once more in finalDrvModule)
-    userConfig = l.mapAttrs mkUserConfigOverride allUserArgs;
-    userArgsModule = {config = userConfig;};
+    userArgsModule = {
+      config.mkDerivation = l.mapAttrs mkUserConfigOverride topLevelOptions;
+      config.flags = config.flags;
+    };
     userEnvModule = {config.env = config.env;};
 
     # nested drv-parts evaluation to include the mkDerivation arguments
@@ -123,6 +130,7 @@ in {config, options, extendModules, ...}: {
     finalDrvModule = {
       imports = [
         ../modules/drv-parts/mkDerivation
+        ../modules/drv-parts/flags
         origMkDrvArgsModule
         origMkDrvEnvModule
         userArgsModule

@@ -8,10 +8,12 @@
     imports = [drv-parts.modules.drv-parts.builtins-derivation];
 
     # set options
-    name = "test";
-    builder = "/bin/sh";
-    args = ["-c" "echo $name > $out"];
-    system = builtins.currentSystem;
+    builtins-derivation = {
+      name = "test";
+      builder = "/bin/sh";
+      args = ["-c" "echo $name > $out"];
+      system = builtins.currentSystem;
+    };
   };
 in
   drv-parts.lib.derivationFromModules {} hello
