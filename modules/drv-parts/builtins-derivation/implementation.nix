@@ -9,7 +9,7 @@
 in {
   imports = [
     ../derivation-common/implementation.nix
-    ../pkg-func
+    ../pkg-func/implementation.nix
   ];
 
   config.final.package-func = lib.mkDefault builtins.derivation;
