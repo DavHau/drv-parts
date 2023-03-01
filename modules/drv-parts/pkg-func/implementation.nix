@@ -7,7 +7,7 @@
 
   # outputs needed to assemble a package as proposed in
   #   https://github.com/NixOS/nix/issues/6507
-  outputs = l.unique config.outputs;
+  outputs = l.unique config.final.outputs;
 
   outputDrvs = l.genAttrs outputs
     (output: config.final.package-func-result.${output});
@@ -44,7 +44,7 @@
 in {
 
   # add an option for each output, eg. out, bin, lib, etc...
-  options.final.package = l.genAttrs config.outputs (output: l.mkOption {
+  options.final.package = l.genAttrs outputs (output: l.mkOption {
     type = t.path;
   });
 

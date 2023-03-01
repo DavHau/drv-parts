@@ -11,8 +11,10 @@
     ../../modules/drv-parts/docs
     {
       deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};
-      src = l.mkForce nixpkgs.htop.src;
-      version =  l.mkForce nixpkgs.htop.version;
+      mkDerivation = {
+        src = l.mkForce nixpkgs.htop.src;
+        version =  l.mkForce nixpkgs.htop.version;
+      };
     }
   ];
 

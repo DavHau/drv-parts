@@ -30,9 +30,11 @@
           # overriding htop
           htop-mod = {
             imports = [./htop.nix];
-            pname = lib.mkForce "htop-mod";
             flags.sensorsSupport = false;
             deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};
+            mkDerivation = {
+              pname = lib.mkForce "htop-mod";
+            };
           };
         };
 

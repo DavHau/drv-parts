@@ -25,10 +25,12 @@
           imports = [drv-parts.modules.drv-parts.builtins-derivation];
 
           # set options
-          name = "test";
-          builder = "/bin/sh";
-          args = ["-c" "echo $name > $out"];
-          system = system;
+          builtins-derivation = {
+            name = "test";
+            args = ["-c" "echo $name > $out"];
+            builder = "/bin/sh";
+            system = system;
+          };
         };
       };
     };

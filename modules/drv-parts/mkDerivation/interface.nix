@@ -1,6 +1,9 @@
 {config, lib, ...}: let
   l = lib // builtins;
   t = l.types;
+
+  common-options = import ../derivation-common/options.nix {inherit lib;};
+
   optNullOrStr = l.mkOption {
     type = t.nullOr t.str;
     default = null;
@@ -30,7 +33,7 @@
     default = null;
   };
 
-  forwardedOptions = {
+  mkDerivationOptions = {
     # from derivation
     builder = optPackage;
 
@@ -195,8 +198,5 @@ in {
     ../pkg-func/interface.nix
   ];
 
-  # signal that all options should be passed to the final derivation function
-  config.argsForward = l.mapAttrs (_: _: true) forwardedOptions;
-
-  options = forwardedOptions;
+  options.mkDerivation = common-options // mkDerivationOptions;
 }

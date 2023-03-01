@@ -1,17 +1,10 @@
 {config, lib, ...}: let
   l = lib // builtins;
   t = l.types;
-in rec {
-  imports = [
-    ../derivation-common/interface.nix
-    ../package/interface.nix
-    ../pkg-func/interface.nix
-  ];
 
-  # signal that all options should be passed to the final derivation function
-  config.argsForward = l.mapAttrs (_: _: true) options;
+  common-options = import ../derivation-common/options.nix {inherit lib;};
 
-  options = {
+  builtin-derivation-options = {
     # basic arguments
     builder = lib.mkOption {
       type = t.oneOf [t.str t.path t.package];
@@ -23,4 +16,13 @@ in rec {
       type = t.str;
     };
   };
+
+in {
+  imports = [
+    ../derivation-common/interface.nix
+    ../package/interface.nix
+    ../pkg-func/interface.nix
+  ];
+
+  options.builtins-derivation = common-options // builtin-derivation-options;
 }

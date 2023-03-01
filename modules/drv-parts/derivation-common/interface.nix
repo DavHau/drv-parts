@@ -14,44 +14,8 @@
     default = null;
   };
 
-  # options forwarded to the final derivation function call
-  forwardedOptions = {
-    # basic arguments
-    args = optListOfStr;
-    outputs = l.mkOption {
-      type = t.nullOr (t.listOf t.str);
-      default = ["out"];
-    };
-    __contentAddressed = optNullOrBool;
-    __structuredAttrs = lib.mkOption {
-      type = t.nullOr t.bool;
-      default = null;
-    };
-
-    # advanced attributes
-    allowedReferences = optListOfStr;
-    allowedRequisites = optListOfStr;
-    disallowedReferences = optListOfStr;
-    disallowedRequisites = optListOfStr;
-    exportReferenceGraph = lib.mkOption {
-      # TODO: make type stricter
-      type = t.nullOr (t.listOf (t.either t.str t.package));
-      default = null;
-    };
-    impureEnvVars = optListOfStr;
-    outputHash = optNullOrStr;
-    outputHashAlgo = optNullOrStr;
-    outputHashMode = optNullOrStr;
-    passAsFile = optListOfStr;
-    preferLocalBuild = optListOfStr;
-    allowSubstitutes = optNullOrBool;
-  };
-
   # drv-parts specific options, not forwardedto the final deirvation call
   drvPartsOptions = {
-    argsForward = l.mkOption {
-      type = t.attrsOf t.bool;
-    };
 
     /*
       This allows defining drvs in an encapsulated manner, while maintaining
@@ -92,6 +56,5 @@
 
   };
 in {
-  config.argsForward = l.mapAttrs (_: _: true) forwardedOptions;
-  options = forwardedOptions // drvPartsOptions;
+  options = drvPartsOptions;
 }

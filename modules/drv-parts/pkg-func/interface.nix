@@ -7,8 +7,13 @@
 in {
   options = {
 
+    final.outputs = l.mkOption {
+      type = t.listOf t.str;
+      description = "Outputs of the derivation this package function produces";
+    };
+
     final.package-args = l.mkOption {
-      type = t.raw;
+      type = t.anything;
       description = "The arguments which will be passed to `final.package-func`";
     };
 
