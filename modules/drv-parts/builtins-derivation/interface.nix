@@ -19,7 +19,6 @@
 
 in {
   imports = [
-    ../derivation-common/interface.nix
     ../package/interface.nix
     ../pkg-func/interface.nix
   ];

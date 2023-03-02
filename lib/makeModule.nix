@@ -130,7 +130,7 @@ in {config, options, extendModules, ...}: {
     finalDrvModule = {
       imports = [
         ../modules/drv-parts/mkDerivation
-        ../modules/drv-parts/flags
+        ../modules/drv-parts/core
         origMkDrvArgsModule
         origMkDrvEnvModule
         userArgsModule

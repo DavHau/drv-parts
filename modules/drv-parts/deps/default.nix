@@ -2,9 +2,8 @@
   l = lib // builtins;
   t = l.types;
 
-  # drv-parts specific options, not forwardedto the final deirvation call
-  drvPartsOptions = {
-
+in {
+  options = {
     /*
       This allows defining drvs in an encapsulated manner, while maintaining
         the capability to depend on external attributes
@@ -32,17 +31,5 @@
         }
       '';
     };
-
-    env = lib.mkOption {
-      type = let
-        baseTypes = [t.bool t.int t.str t.path t.package];
-        allTypes = baseTypes ++ [(t.listOf (t.oneOf baseTypes))];
-      in
-        t.attrsOf (t.oneOf allTypes);
-      default = {};
-    };
-
   };
-in {
-  options = drvPartsOptions;
 }
