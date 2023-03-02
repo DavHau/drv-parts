@@ -7,9 +7,10 @@
     # select builtins.derivation as a backend for this package
     imports = [drv-parts.modules.drv-parts.builtins-derivation];
 
+    public.name = "test";
+
     # set options
     builtins-derivation = {
-      name = "test";
       builder = "/bin/sh";
       args = ["-c" "echo $name > $out"];
       system = builtins.currentSystem;

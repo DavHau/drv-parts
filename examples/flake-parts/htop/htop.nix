@@ -31,15 +31,16 @@ in {
       systemdSupport = lib.mkDefault stdenv.isLinux;
     };
 
+    public.name = "htop";
+    public.version = "3.2.1";
+
     mkDerivation = {
       # set options
-      pname = "htop";
-      version = "3.2.1";
 
       src = deps.fetchFromGitHub {
         owner = "htop-dev";
-        repo = config.mkDerivation.pname;
-        rev = config.mkDerivation.version;
+        repo = config.public.name;
+        rev = config.public.version;
         sha256 = "sha256-MwtsvdPHcUdegsYj9NGyded5XJQxXri1IM1j4gef1Xk=";
       };
 
@@ -70,7 +71,7 @@ in {
         license = licenses.gpl2Only;
         platforms = platforms.all;
         maintainers = with maintainers; [ rob relrod SuperSandro2000 ];
-        changelog = "https://github.com/htop-dev/htop/blob/${version}/ChangeLog";
+        changelog = "https://github.com/htop-dev/htop/blob/${config.public.version}/ChangeLog";
       };
     };
   };

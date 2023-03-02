@@ -13,13 +13,14 @@
       enableFoo = "build with foo";
     };
 
-    mkDerivation = {
-      #   set options
-      pname =
+    public.name =
         if config.flags.enableFoo
         then "hello-with-foo"
         else "hello";
-      version = nixpkgs.hello.version;
+
+    public.version = nixpkgs.hello.version;
+
+    mkDerivation = {
       src = nixpkgs.hello.src;
       doCheck = true;
     };

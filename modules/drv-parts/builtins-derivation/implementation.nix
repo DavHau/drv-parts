@@ -39,7 +39,11 @@ in {
 
   config.final.package-func = lib.mkDefault builtins.derivation;
 
-  config.public.name = cfg.name;
-
-  config.final.package-args = envChecked // finalArgs  // {inherit outputs;};
+  config.final.package-func-args =
+    envChecked
+    // finalArgs
+    // {
+      inherit outputs;
+      inherit (config.public) name;
+    };
 }

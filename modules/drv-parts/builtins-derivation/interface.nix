@@ -9,9 +9,6 @@
     builder = lib.mkOption {
       type = t.oneOf [t.str t.path t.package];
     };
-    name = lib.mkOption {
-      type = t.str;
-    };
     system = lib.mkOption {
       type = t.str;
     };
@@ -19,7 +16,7 @@
 
 in {
   imports = [
-    ../public/interface.nix
+    ../public
     ../pkg-func/interface.nix
   ];
 

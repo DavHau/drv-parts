@@ -76,8 +76,6 @@
 
     # make-derivation args - without defaults
     enableParallelChecking = optNullOrBool;
-    name = optNullOrStr;
-    pname = optNullOrStr;
     realBuilder = optPackage;
     requiredSystemFeatures = optListOfStr;
     version = optNullOrStr;

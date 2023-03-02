@@ -30,21 +30,9 @@
     Specify the top-level option instead, or rename the environment variable.
   '';
 
-  name =
-    if cfg.pname != null
-    then "${cfg.pname}-${cfg.version}"
-    else if cfg.name != null
-    then cfg.name
-    else if cfg.final.package-func-result ? name
-    then cfg.final.package-func-result.name
-    else throw "Cannot determine package name";
-
-  derivation =
-    {
-      inherit name;
-    }
+  public =
     # meta
-    // (l.optionalAttrs (cfg.passthru ? meta) {
+    (l.optionalAttrs (cfg.passthru ? meta) {
       inherit (cfg.passthru) meta;
     })
     # tests
@@ -62,7 +50,14 @@ in {
   config.final.package-func = lib.mkDefault config.deps.stdenv.mkDerivation;
 
   # add mkDerivation specific derivation attributes
-  config.public = derivation;
+  config.public = public;
 
-  config.final.package-args = envChecked // finalArgs // {inherit outputs;};
+  config.final.package-func-args =
+    envChecked
+    // finalArgs
+    // {
+      inherit outputs;
+      inherit (config.public) version;
+      pname = config.public.name;
+    };
 }

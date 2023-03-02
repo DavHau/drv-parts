@@ -125,6 +125,19 @@ in {config, options, extendModules, ...}: {
     };
     userEnvModule = {config.env = config.env;};
 
+    # drv-parts strictly requires name + version. If the original derivation
+    #   only specified a `name` but no `version` or `pname`, we have to recover
+    #   name and version from the original `name` by splitting it.
+    origNameSplit = l.splitString "-" origMkDrvArgs.name;
+    finalVersion =
+      if origMkDrvArgs ? version
+      then origMkDrvArgs.version
+      else l.last origNameSplit;
+    finalName =
+      if origMkDrvArgs ? pname
+      then origMkDrvArgs.pname
+      else l.removeSuffix finalVersion origMkDrvArgs.name;
+
     # nested drv-parts evaluation to include the mkDerivation arguments
     # extracted from the default.nix package func
     finalDrvModule = {
@@ -139,6 +152,8 @@ in {config, options, extendModules, ...}: {
       _file = "finalDrvModule";
       options = flagOptions;
       config.deps.stdenv = config.deps.stdenv;
+      config.public.name = finalName;
+      config.public.version = finalVersion;
     };
 
     finalDrvEval = l.evalModules {

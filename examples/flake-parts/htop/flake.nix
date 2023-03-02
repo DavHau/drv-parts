@@ -32,9 +32,7 @@
             imports = [./htop.nix];
             flags.sensorsSupport = false;
             deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};
-            mkDerivation = {
-              pname = lib.mkForce "htop-mod";
-            };
+            public.name = lib.mkForce "htop-mod";
           };
         };
 

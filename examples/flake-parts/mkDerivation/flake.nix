@@ -19,7 +19,7 @@
 
       perSystem = {config, pkgs, ...}: {
         checks = config.packages;
-        drvs.hello = {
+        drvs.hello = {config, ...}: {
 
           # select mkDerivation as a backend for this package
           imports = [drv-parts.modules.drv-parts.mkDerivation];
@@ -28,11 +28,13 @@
             inherit (nixpkgs) stdenv;
           };
 
+          public.name = "hello";
+          public.version = "2.12.1";
+
           # set options
           mkDerivation = {
-            name = "hello";
             src = pkgs.fetchurl {
-              url = "mirror://gnu/hello/hello-2.12.1.tar.gz";
+              url = "mirror://gnu/hello/${config.public.name}-${config.public.version}.tar.gz";
               sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
             };
           };
