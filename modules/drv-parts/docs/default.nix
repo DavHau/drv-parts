@@ -4,7 +4,7 @@
 
   deps = config.deps;
 
-  packageName = config.final.package.name;
+  packageName = config.public.name;
 
   title = "Manual for ${packageName}";
 
@@ -55,7 +55,7 @@
 in {
 
   options = {
-    final.package.docs = l.mkOption {
+    public.docs = l.mkOption {
       type = t.package;
       description = "The manual of the package as a website";
       readOnly = true;
@@ -74,5 +74,5 @@ in {
       ;
   };
 
-  config.final.package.docs = docs;
+  config.public.docs = docs;
 }

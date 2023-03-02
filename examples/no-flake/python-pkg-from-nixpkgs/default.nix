@@ -25,4 +25,4 @@
     specialArgs.dependencySets.nixpkgs = nixpkgs;
   };
 in
-  pkg.config.final.package
+  pkg.config.public

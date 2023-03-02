@@ -193,7 +193,7 @@
 
 in {
   imports = [
-    ../package/interface.nix
+    ../public/interface.nix
     ../pkg-func/interface.nix
   ];
 

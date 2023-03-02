@@ -20,7 +20,7 @@
   isSingleDrvPackage = (l.length (l.unique outputDrvsContexts)) == 1;
 
   nonSingleDrvError = ''
-    The package ${config.final.package.name} consists of multiple outputs that are built by distinct derivations. It can't be understood as a single derivation.
+    The package ${config.public.name} consists of multiple outputs that are built by distinct derivations. It can't be understood as a single derivation.
     This problem is causes by referencing the package directly. Instead, reference one of its output attributes:
       - .${l.concatStringsSep "\n  - ." outputs}
   '';
@@ -44,10 +44,10 @@
 in {
 
   # add an option for each output, eg. out, bin, lib, etc...
-  options.final.package = l.genAttrs outputs (output: l.mkOption {
+  options.public = l.genAttrs outputs (output: l.mkOption {
     type = t.path;
   });
 
   # the final derivation
-  config.final.package = derivation;
+  config.public = derivation;
 }

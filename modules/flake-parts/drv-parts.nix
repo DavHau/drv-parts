@@ -102,7 +102,7 @@ in {
       This exposes the `.derivation` attribute (the actual derivation) of each
         defined `pkgs.xxx` under the flake output `packages`.
     */
-    config.packages = l.mapAttrs (name: pkg: pkg.final.package) config.drvs;
+    config.packages = l.mapAttrs (name: pkg: pkg.public) config.drvs;
   };
 
 }

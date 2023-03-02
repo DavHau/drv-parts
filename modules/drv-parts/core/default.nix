@@ -3,6 +3,6 @@
     ../deps
     ../env
     ../flags
-    ../package
+    ../public
   ];
 }

@@ -15,7 +15,7 @@
         };
       };
     in
-      drv.config.final.package;
+      drv.config.public;
 
     makeModule = import ../../lib/makeModule.nix {
       inherit lib;

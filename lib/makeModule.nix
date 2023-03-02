@@ -73,7 +73,7 @@ in {config, options, extendModules, ...}: {
 
   options.flags = flagOptions;
   options.deps = l.mapAttrs mkDepOpt depArgs;
-  options.final.package.drvAttrs = l.mkOption {
+  options.public.drvAttrs = l.mkOption {
     type = t.lazyAttrsOf t.raw;
   };
 
@@ -146,7 +146,7 @@ in {config, options, extendModules, ...}: {
       specialArgs.dependencySets = {};
     };
 
-    finalDerivation = finalDrvEval.config.final.package;
+    finalDerivation = finalDrvEval.config.public;
 
     outputDrvs = l.genAttrs finalDerivation.outputs
       (output: finalDerivation.${output});
@@ -180,6 +180,6 @@ in {config, options, extendModules, ...}: {
     deps = deps;
 
     # we ignore the args as the derivation is computed elsewhere
-    final.package = result;
+    public = result;
   };
 }

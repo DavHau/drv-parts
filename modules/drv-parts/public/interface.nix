@@ -15,7 +15,7 @@
 in {
 
   # this will contain the resulting derivation
-  options.final.package = l.mkOption {
+  options.public = l.mkOption {
     type = t.submodule {
       freeformType = t.lazyAttrsOf t.anything;
       options = opts;
