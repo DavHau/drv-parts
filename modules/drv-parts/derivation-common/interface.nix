@@ -1,18 +1,6 @@
 {config, lib, dependencySets, ...}: let
   l = lib // builtins;
   t = l.types;
-  optNullOrBool = l.mkOption {
-    type = t.nullOr t.bool;
-    default = null;
-  };
-  optListOfStr = l.mkOption {
-    type = t.nullOr (t.listOf t.str);
-    default = null;
-  };
-  optNullOrStr = l.mkOption {
-    type = t.nullOr t.str;
-    default = null;
-  };
 
   # drv-parts specific options, not forwardedto the final deirvation call
   drvPartsOptions = {
