@@ -21,10 +21,13 @@
       inherit lib;
     };
 
+    mkDerivation-based = import ../../lib/mkDerivation-based.nix;
+
     drvPartsLib = {
       inherit
         derivationFromModules
         makeModule
+        mkDerivation-based
         ;
     };
   in
