@@ -173,7 +173,7 @@ in {config, options, extendModules, ...}: {
       // {
         inherit (finalDerivation) name version drvPath outPath outputs;
         inherit config extendModules;
-        drvAttrs = finalDrvEval.config.final.package-func-result.drvAttrs;
+        drvAttrs = finalDrvEval.config.package-func.result.drvAttrs;
         type = "derivation";
       };
 

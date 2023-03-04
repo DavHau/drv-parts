@@ -35,11 +35,11 @@ in {
     ../pkg-func/implementation.nix
   ];
 
-  config.final.outputs = cfg.outputs;
+  config.package-func.outputs = cfg.outputs;
 
-  config.final.package-func = lib.mkDefault builtins.derivation;
+  config.package-func.func = lib.mkDefault builtins.derivation;
 
-  config.final.package-func-args =
+  config.package-func.args =
     envChecked
     // finalArgs
     // {

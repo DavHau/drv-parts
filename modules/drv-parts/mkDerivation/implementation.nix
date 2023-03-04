@@ -45,14 +45,14 @@ in {
     ../pkg-func/implementation.nix
   ];
 
-  config.final.outputs = cfg.outputs;
+  config.package-func.outputs = cfg.outputs;
 
-  config.final.package-func = lib.mkDefault config.deps.stdenv.mkDerivation;
+  config.package-func.func = lib.mkDefault config.deps.stdenv.mkDerivation;
 
   # add mkDerivation specific derivation attributes
   config.public = public;
 
-  config.final.package-func-args =
+  config.package-func.args =
     envChecked
     // finalArgs
     // {

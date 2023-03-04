@@ -7,10 +7,10 @@
 
   # outputs needed to assemble a package as proposed in
   #   https://github.com/NixOS/nix/issues/6507
-  outputs = l.unique config.final.outputs;
+  outputs = l.unique config.package-func.outputs;
 
   outputDrvs = l.genAttrs outputs
-    (output: config.final.package-func-result.${output});
+    (output: config.package-func.result.${output});
 
   outputPaths = l.mapAttrs (_: drv: "${drv}") outputDrvs;
 
