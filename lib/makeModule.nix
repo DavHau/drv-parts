@@ -166,7 +166,7 @@ in {config, options, extendModules, ...}: {
     outputDrvs = l.genAttrs finalDerivation.outputs
       (output: finalDerivation.${output});
 
-    result =
+    public =
       # out, lib, bin, etc...
       outputDrvs
       # outputs, drvPath
@@ -195,6 +195,6 @@ in {config, options, extendModules, ...}: {
     deps = deps;
 
     # we ignore the args as the derivation is computed elsewhere
-    public = result;
+    public = public;
   };
 }

@@ -30,7 +30,7 @@
     then returnVal
     else throw nonSingleDrvError;
 
-  derivation =
+  public =
     # out, lib, bin, etc...
     outputDrvs
     # outputs, drvPath
@@ -49,5 +49,5 @@ in {
   });
 
   # the final derivation
-  config.public = derivation;
+  config.public = public;
 }
