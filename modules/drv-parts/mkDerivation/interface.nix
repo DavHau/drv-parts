@@ -192,7 +192,7 @@
 in {
   imports = [
     ../public/interface.nix
-    ../pkg-func/interface.nix
+    ../package-func/interface.nix
   ];
 
   options.mkDerivation = common-options // mkDerivationOptions;

@@ -42,7 +42,7 @@
 
 in {
   imports = [
-    ../pkg-func/implementation.nix
+    ../package-func/implementation.nix
   ];
 
   config.package-func.outputs = cfg.outputs;

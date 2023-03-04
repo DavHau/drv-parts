@@ -17,7 +17,7 @@
 in {
   imports = [
     ../public
-    ../pkg-func/interface.nix
+    ../package-func/interface.nix
   ];
 
   options.builtins-derivation = common-options // builtin-derivation-options;
