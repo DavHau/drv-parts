@@ -22,5 +22,7 @@
       imports = [
         ./modules/flake-parts/all-modules.nix
       ];
+
+      flake.flakeModule = ./modules/flake-parts/drv-parts.nix;
     };
 }
