@@ -76,6 +76,13 @@ in {
             inherit (self') packages;
             nixpkgs = pkgs;
           };
+          defaultText = ''
+            {
+              inherit inputs';
+              inherit (self') packages;
+              nixpkgs = pkgs;
+            }
+          '';
           description = ''
             Define the package sets which can be used to pick dependencies from.
             Basically this specifies the arguments passed to the function defined via drvs.<name>.deps.
