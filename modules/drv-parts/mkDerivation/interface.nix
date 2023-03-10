@@ -41,6 +41,7 @@
     depsBuildBuild = optList;
     depsBuildBuildPropagated = optList;
     nativeBuildInputs = optList;
+    nativeCheckInputs = optList;
     propagatedNativeBuildInputs = optList;
     depsBuildTarget = optList;
     depsBuildTargetPropagated = optList;
