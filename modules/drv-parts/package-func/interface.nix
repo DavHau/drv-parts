@@ -13,7 +13,7 @@ in {
     };
 
     package-func.args = l.mkOption {
-      type = t.anything;
+      type = t.attrsOf (t.either (t.listOf t.raw) t.anything);
       description = "The arguments which will be passed to `package-func.func`";
     };
 
