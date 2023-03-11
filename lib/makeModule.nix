@@ -7,9 +7,6 @@
   #   - or something that offers an override function
   packageFunc,
 
-  # The function used to extract and merge package attributes
-  overrideFuncName ? "overrideAttrs",
-
   # pass extra modules to include by default
   modules ? [],
   ...
@@ -55,7 +52,7 @@
   # override func that exposes mkDerivation arguments
   passthruMkDrvArgs = oldArgs: {passthru.__mkDrvArgs = oldArgs;};
 
-  getMkDrvArgs = drv: (drv.${overrideFuncName} passthruMkDrvArgs).__mkDrvArgs;
+    getMkDrvArgs = drv: (drv.overrideAttrs passthruMkDrvArgs).__mkDrvArgs;
 
   mkDepOpt = depName: _: l.mkOption {
     description = "Specify a package for the dependency ${depName}.";
