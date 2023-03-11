@@ -10,7 +10,7 @@ in {
         baseTypes = [t.bool t.int t.str t.path t.package];
         allTypes = baseTypes ++ [(t.listOf (t.oneOf baseTypes))];
       in
-        t.attrsOf (t.oneOf allTypes);
+        t.attrsOf (t.nullOr (t.oneOf allTypes));
       default = {};
     };
   };
