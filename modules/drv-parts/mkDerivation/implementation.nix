@@ -18,7 +18,7 @@
   envChecked =
     l.mapAttrs
     (key: val:
-      if config.mkDerivation.${key} or false
+      if config.mkDerivation ? ${key}
       then throw (envCollisionError key)
       else val)
     config.env;
