@@ -15,7 +15,10 @@
   };
 in {
   # basic arguments
-  args = optListOfStr;
+  args = l.mkOption {
+    type = t.nullOr (t.listOf (t.oneOf [t.str t.path]));
+    default = null;
+  };
   outputs = l.mkOption {
     type = t.nullOr (t.listOf t.str);
     default = ["out"];
