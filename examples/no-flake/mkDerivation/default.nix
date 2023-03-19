@@ -13,12 +13,12 @@
       enableFoo = "build with foo";
     };
 
-    public.name =
+    name =
         if config.flags.enableFoo
         then "hello-with-foo"
         else "hello";
 
-    public.version = nixpkgs.hello.version;
+    version = nixpkgs.hello.version;
 
     mkDerivation = {
       src = nixpkgs.hello.src;

@@ -4,5 +4,6 @@
     ../env
     ../flags
     ../public
+    ../ui
   ];
 }

@@ -149,8 +149,8 @@ in {config, options, extendModules, ...}: {
       _file = "finalDrvModule";
       options = flagOptions;
       config.deps.stdenv = config.deps.stdenv;
-      config.public.name = finalName;
-      config.public.version = finalVersion;
+      config.name = finalName;
+      config.version = finalVersion;
     };
 
     finalDrvEval = l.evalModules {
@@ -190,6 +190,9 @@ in {config, options, extendModules, ...}: {
 
   {
     deps = deps;
+
+    name = l.mkDefault finalDerivation.name;
+    version = l.mkDefault finalDerivation.version;
 
     # we ignore the args as the derivation is computed elsewhere
     public = public;

@@ -28,13 +28,13 @@
             inherit (nixpkgs) stdenv;
           };
 
-          public.name = "hello";
-          public.version = "2.12.1";
+          name = "hello";
+          version = "2.12.1";
 
           # set options
           mkDerivation = {
             src = pkgs.fetchurl {
-              url = "mirror://gnu/hello/${config.public.name}-${config.public.version}.tar.gz";
+              url = "mirror://gnu/hello/${config.name}-${config.version}.tar.gz";
               sha256 = "sha256-jZkUKv2SV28wsM18tCqNxoCZmLxdYH2Idh9RLibH2yA=";
             };
           };

@@ -46,7 +46,7 @@ Changing options of packages in nixpkgs can require chaining different override 
 {
   htop-mod = {
     imports = [./htop.nix];
-    public.name = lib.mkForce "htop-mod";
+    name = lib.mkForce "htop-mod";
     flags.sensorsSupport = false;
   };
 }

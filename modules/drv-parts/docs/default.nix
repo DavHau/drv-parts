@@ -4,7 +4,7 @@
 
   deps = config.deps;
 
-  packageName = config.public.name;
+  packageName = config.name;
 
   title = "Manual for ${packageName}";
 

@@ -15,10 +15,8 @@
       myBuildFunc = nixpkgs.stdenv.mkDerivation;
     };
 
-    public = {
-      name = "test-mkDerivation-based";
-      version = nixpkgs.hello.version;
-    };
+    name = "test-mkDerivation-based";
+    version = nixpkgs.hello.version;
 
     mkDerivation = {
       phases = ["buildPhase"];

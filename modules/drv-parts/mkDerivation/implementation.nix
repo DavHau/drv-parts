@@ -25,7 +25,7 @@
 
   # generates error message for env variable collision
   envCollisionError = key: ''
-    Error while evaluating definitions for derivation ${config.public.name}
+    Error while evaluating definitions for derivation ${config.name}
     The environment variable defined via `env.${key}' collides with the top-level option `${key}'.
     Specify the top-level option instead, or rename the environment variable.
   '';
@@ -58,6 +58,6 @@ in {
     // {
       inherit outputs;
       inherit (config.public) version;
-      pname = config.public.name;
+      pname = config.name;
     };
 }

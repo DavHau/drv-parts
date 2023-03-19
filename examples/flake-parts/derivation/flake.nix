@@ -24,7 +24,7 @@
           # select mkDerivation as a backend for this package
           imports = [drv-parts.modules.drv-parts.builtins-derivation];
 
-          public.name = "test";
+          name = "test";
 
           # set options
           builtins-derivation = {
