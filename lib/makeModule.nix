@@ -103,7 +103,14 @@ in {config, options, extendModules, ...}: {
       l.filterAttrs (argName: _: ! origMkDrvArgsTopLevel ? ${argName}) origMkDrvArgs;
 
     # modules for the mkDerivation and env args originating from the default.nix
-    origMkDrvArgsModule = {config.mkDerivation = origMkDrvArgsTopLevel;};
+    origMkDrvArgsModule = {
+      config.mkDerivation =
+        origMkDrvArgsTopLevel
+        // {
+          # lower prio for some non-mergeable attributes
+          src = l.mkDefault origMkDrvArgsTopLevel.src;
+        };
+    };
     origMkDrvEnvModule = {config.env = origMkDrvArgsEnv;};
 
     # Restore priorities of user specified config.
