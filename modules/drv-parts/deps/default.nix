@@ -30,6 +30,7 @@ in {
           nix = inputs'.nix.packages.default;
         }
       '';
+      default = {};
     };
   };
 }
