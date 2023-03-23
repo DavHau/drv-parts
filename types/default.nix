@@ -1,6 +1,6 @@
 {
   lib,
-  dependencySets,
+  specialArgs,
   ...
 }: let
   l = lib // builtins;
@@ -11,7 +11,7 @@
   drvPart = let
     type = (t.submoduleWith{
       modules = [../modules/drv-parts/core];
-      specialArgs = {inherit dependencySets;};
+      inherit specialArgs;
     });
   in
     type

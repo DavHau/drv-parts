@@ -1,10 +1,10 @@
-{config, lib, dependencySets, ...}: let
+{config, lib, specialArgs, ...}: let
   l = lib // builtins;
   t = l.types;
 
   common-options = import ../derivation-common/options.nix {inherit lib;};
   drvPartsTypes = import ../../../types {
-    inherit lib dependencySets;
+    inherit lib specialArgs;
   };
 
   # Accepts either a derivation or a drv-parts submodule.
