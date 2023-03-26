@@ -1,5 +1,6 @@
 {
   imports = [
+    ../docs
     ../deps
     ../env
     ../flags
