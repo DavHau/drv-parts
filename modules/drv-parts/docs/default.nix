@@ -30,10 +30,18 @@
       cp options.html $out/options.html
     '';
 
+  # content for $out/bin/docs, making it possible to use `nix run .#{pkg}.docs`
+  executable = ''
+    #!/usr/bin/env bash
+    xdg-open $out/index.html
+  '';
+
   docs = deps.stdenvNoCC.mkDerivation {
     name = "docs-for-${packageName}";
     nativeBuildInputs = [ deps.mdbook deps.mdbook-linkcheck ];
     src = ./.;
+    dontInstall = true;
+    meta.mainProgram = "docs";
     buildPhase = ''
       runHook preBuild
 
@@ -47,9 +55,12 @@
       mdbook build --dest-dir $TMPDIR/out
       cp -r $TMPDIR/out/html $out
 
+      mkdir $out/bin
+      echo "${executable}" > $out/bin/docs
+      chmod +x $out/bin/docs
+
       runHook postBuild
     '';
-    dontInstall = true;
   };
 
 in {
