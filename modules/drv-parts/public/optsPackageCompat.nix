@@ -15,5 +15,6 @@ in {
   };
   type = l.mkOption {
     type = t.str;
+    default = "derivation";
   };
 }
