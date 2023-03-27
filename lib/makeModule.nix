@@ -55,7 +55,6 @@
     getMkDrvArgs = drv: (drv.overrideAttrs passthruMkDrvArgs).__mkDrvArgs;
 
   mkDepOpt = depName: _: l.mkOption {
-    description = "Specify a package for the dependency ${depName}.";
     type = t.raw;
   };
 

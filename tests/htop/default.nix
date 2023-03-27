@@ -8,7 +8,6 @@
 
   my-htop = drv-parts.lib.derivationFromModules {inherit nixpkgs;} [
     ../../examples/flake-parts/htop/htop.nix
-    ../../modules/drv-parts/docs
     {
       deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};
       mkDerivation = {
