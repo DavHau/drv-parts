@@ -45,6 +45,10 @@ in {
     ../package-func/implementation.nix
   ];
 
+  config.deps = {nixpkgs, ...}: l.mapAttrs (_: l.mkDefault) {
+    inherit (nixpkgs) stdenv;
+  };
+
   config.package-func.outputs = cfg.outputs;
 
   config.package-func.func = lib.mkDefault config.deps.stdenv.mkDerivation;

@@ -204,4 +204,11 @@ in {
   ];
 
   options.mkDerivation = common-options // mkDerivationOptions;
+
+  options.deps.stdenv = l.mkOption {
+    type = t.raw;
+    description = ''
+      The stdenv used for building this package
+    '';
+  };
 }

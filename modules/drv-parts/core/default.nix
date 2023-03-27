@@ -4,7 +4,7 @@
     ../deps
     ../env
     ../flags
-    ../public
     ../ui
+    ../public
   ];
 }
