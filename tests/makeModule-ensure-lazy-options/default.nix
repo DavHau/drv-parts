@@ -1,6 +1,6 @@
 {
   nixpkgs ? import <nixpkgs> {},
-  drv-parts ? import ../../. {inherit (nixpkgs) lib;},
+  drv-parts ? import ../../.,
   ...
 }: let
 
