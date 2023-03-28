@@ -1,4 +1,4 @@
-{config, lib, dependencySets, ...}: let
+{config, lib, packageSets, ...}: let
   l = lib // builtins;
   t = l.types;
 

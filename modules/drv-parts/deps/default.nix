@@ -1,4 +1,4 @@
-{config, lib, dependencySets, ...}: let
+{config, lib, packageSets, ...}: let
   l = lib // builtins;
   t = l.types;
 
@@ -21,7 +21,7 @@ in {
         # TODO: This could be made stricter by removing the freeformType
         # Maybe add option `strictDeps = true/false` ? ;P
         modules = [{freeformType = t.lazyAttrsOf t.raw;}];
-        specialArgs = dependencySets;
+        specialArgs = packageSets;
       };
       example = lib.literalExpression ''
         {nixpkgs, inputs', ...}: {

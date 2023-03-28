@@ -2,7 +2,7 @@
   flake.lib = let
     l = lib // builtins;
 
-    derivationFromModules = dependencySets: modules: let
+    derivationFromModules = packageSets: modules: let
       drv = lib.evalModules {
         modules =
           (l.toList modules)
@@ -10,7 +10,7 @@
             ../drv-parts/core
           ];
         specialArgs = {
-          inherit dependencySets;
+          inherit packageSets;
           drv-parts.modules = self.modules;
         };
       };

@@ -161,7 +161,7 @@ in {config, options, extendModules, ...}: {
 
     finalDrvEval = l.evalModules {
       modules = [finalDrvModule];
-      specialArgs.dependencySets = {};
+      specialArgs.packageSets = {};
     };
 
     finalDerivation = finalDrvEval.config.public;

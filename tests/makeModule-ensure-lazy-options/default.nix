@@ -16,7 +16,7 @@ l = nixpkgs.lib // builtins;
       helloDefaultNix
       {deps = {nixpkgs, ...}: {inherit (nixpkgs) stdenv;};}
     ];
-    specialArgs.dependencySets = {};
+    specialArgs.packageSets = {};
   };
 in
   l.seq helloEvaled.options

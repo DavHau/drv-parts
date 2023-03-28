@@ -22,7 +22,7 @@
       pythonModule
       myModule
     ];
-    specialArgs.dependencySets.nixpkgs = nixpkgs;
+    specialArgs.packageSets.nixpkgs = nixpkgs;
   };
 in
   pkg.config.public

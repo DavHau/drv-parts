@@ -15,7 +15,7 @@ in {
               ];
               specialArgs = {
                 inherit (inputs) drv-parts;
-                inherit (config.drv-parts) dependencySets;
+                inherit (config.drv-parts) packageSets;
               };
             }
           );
@@ -69,7 +69,7 @@ in {
           '';
         };
 
-        drv-parts.dependencySets = l.mkOption {
+        drv-parts.packageSets = l.mkOption {
           type = t.lazyAttrsOf t.raw;
           default = {
             inherit inputs';
