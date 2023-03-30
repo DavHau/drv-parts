@@ -183,14 +183,11 @@ in {config, options, extendModules, ...}: {
     /*
       Populate deps with some defaults.
       `lib` should be taken from the current module.
-      `stdenv` should be taken from `config.deps.stdenv`.
     */
-    deps' = {
+    deps = {nixpkgs, ...}: l.mapAttrs (_: dep: l.mkDefault dep) {
       inherit lib;
-      inherit (config.deps) stdenv;
+      inherit (nixpkgs) stdenv;
     };
-    deps'' = l.intersectAttrs depArgs deps';
-    deps = l.mapAttrs (_: dep: l.mkDefault dep) deps'';
 
   in
 
