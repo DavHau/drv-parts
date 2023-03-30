@@ -186,7 +186,6 @@ in {config, options, extendModules, ...}: {
     */
     deps = {nixpkgs, ...}: l.mapAttrs (_: dep: l.mkDefault dep) {
       inherit lib;
-      inherit (nixpkgs) stdenv;
     };
 
   in
