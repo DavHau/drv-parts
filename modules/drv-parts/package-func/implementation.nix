@@ -39,6 +39,7 @@
       inherit config extendModules;
       drvPath = throwIfMultiDrvOr outputDrvs.out.drvPath;
       outPath = throwIfMultiDrvOr outputDrvs.out.outPath;
+      outputName = throwIfMultiDrvOr outputDrvs.out.outputName;
       type = "derivation";
     };
 in {
