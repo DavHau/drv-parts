@@ -13,6 +13,9 @@ in {
   outPath = l.mkOption {
     type = t.path;
   };
+  outputName = l.mkOption {
+    type = t.str;
+  };
   type = l.mkOption {
     type = t.str;
     default = "derivation";
