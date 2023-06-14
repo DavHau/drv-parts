@@ -26,7 +26,7 @@
   # generates error message for env variable collision
   envCollisionError = key: ''
     Error while evaluating definitions for derivation ${config.name}
-    The environment variable defined via `env.${key}' collides with the top-level option `${key}'.
+    The environment variable defined via `env.${key}' collides with the option mkDerivation.`${key}'.
     Specify the top-level option instead, or rename the environment variable.
   '';
 
