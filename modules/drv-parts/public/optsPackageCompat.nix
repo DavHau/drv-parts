@@ -13,6 +13,7 @@ in {
   outPath = l.mkOption {
     type = t.path;
   };
+  # Needed by nix run .#installable
   outputName = l.mkOption {
     type = t.str;
   };
