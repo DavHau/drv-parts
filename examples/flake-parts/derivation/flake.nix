@@ -21,7 +21,7 @@
         checks = config.packages;
         drvs.test = {
 
-          # select mkDerivation as a backend for this package
+          # select builtins-derivation as a backend for this package
           imports = [drv-parts.modules.drv-parts.builtins-derivation];
 
           name = "test";
